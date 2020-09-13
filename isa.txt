@@ -1,7 +1,7 @@
 
 
 this is where I'm putting the ISA
-
+data it little endian
 
  ----------------
  OPCODE
@@ -24,8 +24,8 @@ this is where I'm putting the ISA
  Does nothing.
  
  next inst
- 0000 0000 0000 0000 1100 0000 0000 0111
-    0    0    0    0    C    0    0    7
+ 0000 0000 0000 0011 0000 0000 0001 0011
+    0    0    0    3    0    0    1    3
  
  ----------------
  POP
@@ -36,26 +36,71 @@ this is where I'm putting the ISA
  Discards the top of the stack
  
  increment sp & next inst
- 0000 0000 0000 0000 1100 1100 0000 0111
-    0    0    0    0    C    C    0    7
+ 0000 0000 0000 0011 0011 0000 0001 0011
+    0    0    0    3    3    0    1    3
+ 
+ ----------------
+ POP constant
+ |----|---------------------|
+ | 02 | const unsigned byte |
+ |----|---------------------|
+ 
+ Pops n bytes from the stack
+ Affects carry flag
+ 
+ load a with sp low
+ 0000 0000 0000 0000 0000 0000 1001 1010
+    0    0    0    0    0    0    9    A
+ 
+ load b with constant
+ 0000 0000 0000 0001 0000 0010 0001 0011
+    0    0    0    1    0    2    1    3
+ 
+ add, store b
+ 0000 0110 1010 0100 0000 0111 0001 0100
+    0    6    A    4    0    7    1    4
+ 
+ load a with sp high
+ 0000 0000 0000 0000 0000 0000 1011 1010
+    0    0    0    0    0    0    B    A
+ 
+ add carry to a
+ 0000 0000 0000 0000 0000 0001 1001 0100
+    0    0    0    0    0    1    9    4
+ 
+ store ab to sp
+ 0000 0000 0000 0000 0010 0000 0010 0000
+    0    0    0    0    2    0    2    0
+ 
+ next inst
+ 0000 0000 0000 0011 0000 0000 0001 0011
+    0    0    0    3    0    0    1    3
  
  ----------------
  PUSH constant
  |----|------------|
- | 02 | const byte |
+ | 04 | const byte |
  |----|------------|
  
  Pushes a constant onto the stack
  
  decrement sp, load constant to A
- 0000 0000 0000 0000 0100 1000 0001 0111
-    0    0    0    0    4    8    1    7
+ 0000 0000 0000 0001 0010 0000 1001 0011
+    0    0    0    1    2    0    9    3
  store A at sp
- 0000 0010 1010 0000 0000 0000 0010 1010
-    0    2    A    0    0    0    2    A
+ 0000 0010 1000 0000 0000 0001 0101 0110
+    0    2    8    0    0    1    5    6
  next inst
- 0000 0000 0000 0000 1100 0000 0000 0111
-    0    0    0    0    C    0    0    7
+ 0000 0000 0000 0011 0000 0000 0001 0011
+    0    0    0    3    0    0    1    3
+    
+ ----------------
+ PUSH address
+ |----|------------|
+ | 05 | const word |
+ |----|------------|
+ 
+ Pushes an address onto the stack
  
  ----------------
  READ
@@ -66,14 +111,14 @@ this is where I'm putting the ISA
  Reads the value from IO, placing it on the stack
  
  decrement sp, load IO to A
- 1000 0000 0000 0000 0000 1000 0001 0000
-    8    0    0    0    0    8    1    0
+ 0000 0000 0000 0000 0010 0000 1001 1100
+    0    0    0    0    2    0    9    C
  store A at sp
- 0000 0010 1010 0000 0000 0000 0010 1010
-    0    2    A    0    0    0    2    A
+ 0000 0010 1000 0000 0000 0001 0101 0110
+    0    2    8    0    0    1    5    6
  next inst
- 0000 0000 0000 0000 1100 0000 0000 0111
-    0    0    0    0    C    0    0    7
+ 0000 0000 0000 0011 0000 0000 0001 0011
+    0    0    0    3    0    0    1    3
  
  ----------------
  WRITE
@@ -84,12 +129,12 @@ this is where I'm putting the ISA
  Writes the value on the stack to IO
  
  write stack to IO
- 0100 0000 0000 0000 0000 0000 0000 0110
-    4    0    0    0    0    0    0    6
+ 1000 0000 0000 0000 0000 0000 0001 0010
+    8    0    0    0    0    0    1    2
  
  increment sp & next inst
- 0000 0000 0000 0000 1100 1100 0000 0111
-    0    0    0    0    C    C    0    7
+ 0000 0000 0000 0011 0011 0000 0001 0011
+    0    0    0    3    3    0    1    3
     
  ----------------
  
