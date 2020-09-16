@@ -1,7 +1,12 @@
 
 
-this is where I'm putting the ISA
-data it little endian
+ this is where I'm putting the ISA
+ data is little endian
+ spaces at the start of lines means they're ignored by the rom generator
+ other characters mark information
+ 
+ > is an entry point, and is on the line with the instruction's opcode
+ ~ is a binary control word
 
  ----------------
  OPCODE
@@ -13,86 +18,75 @@ data it little endian
  
  Microcode
  0000 0000 0000 0000 0000 0000 0000 0000
-    0    0    0    0    0    0    0    0
  
  ----------------
  NOP
  |----|
- | 00 |
+>| 00 |
  |----|
  
  Does nothing.
  
  next inst
- 0000 0000 0000 0011 0000 0000 0001 0011
-    0    0    0    3    0    0    1    3
+~0000 0000 0000 0011 0000 0000 0001 0011
  
  ----------------
  POP
  |----|
- | 01 |
+>| 01 |
  |----|
  
  Discards the top of the stack
  
  increment sp & next inst
- 0000 0000 0000 0011 0011 0000 0001 0011
-    0    0    0    3    3    0    1    3
+~0000 0000 0000 0011 0011 0000 0001 0011
  
  ----------------
  POP constant
  |----|---------------------|
- | 02 | const unsigned byte |
+>| 02 | const unsigned byte |
  |----|---------------------|
  
  Pops n bytes from the stack
  Affects carry flag
  
  load a with sp low
- 0000 0000 0000 0000 0000 0000 1001 1010
-    0    0    0    0    0    0    9    A
+~0000 0000 0000 0000 0000 0000 1001 1010
  
  load b with constant
- 0000 0000 0000 0001 0000 0010 0001 0011
-    0    0    0    1    0    2    1    3
+~0000 0000 0000 0001 0000 0010 0001 0011
  
  add, store b
- 0000 0110 1010 0100 0000 0111 0001 0100
-    0    6    A    4    0    7    1    4
+~0000 0110 1010 0100 0000 0111 0001 0100
  
  load a with sp high
- 0000 0000 0000 0000 0000 0000 1011 1010
-    0    0    0    0    0    0    B    A
+~0000 0000 0000 0000 0000 0000 1011 1010
  
  add carry to a
- 0000 0000 0000 0000 0000 0001 1001 0100
-    0    0    0    0    0    1    9    4
+~0000 0000 0000 0000 0000 0001 1001 0100
  
  store ab to sp
- 0000 0000 0000 0000 0010 0000 0010 0000
-    0    0    0    0    2    0    2    0
+~0000 0000 0000 0000 0010 0000 0010 0000
  
  next inst
- 0000 0000 0000 0011 0000 0000 0001 0011
-    0    0    0    3    0    0    1    3
+~0000 0000 0000 0011 0000 0000 0001 0011
  
  ----------------
  PUSH constant
  |----|------------|
- | 04 | const byte |
+>| 04 | const byte |
  |----|------------|
  
  Pushes a constant onto the stack
  
  decrement sp, load constant to A
- 0000 0000 0000 0001 0010 0000 1001 0011
-    0    0    0    1    2    0    9    3
+~0000 0000 0000 0001 0010 0000 1001 0011
+
  store A at sp
- 0000 0010 1000 0000 0000 0001 0101 0110
-    0    2    8    0    0    1    5    6
+~0000 0010 1000 0000 0000 0001 0101 0110
+
  next inst
- 0000 0000 0000 0011 0000 0000 0001 0011
-    0    0    0    3    0    0    1    3
+~0000 0000 0000 0011 0000 0000 0001 0011
     
  ----------------
  PUSH address
@@ -105,36 +99,33 @@ data it little endian
  ----------------
  READ
  |----|
- | FE |
+>| FE |
  |----|
  
  Reads the value from IO, placing it on the stack
  
  decrement sp, load IO to A
- 0000 0000 0000 0000 0010 0000 1001 1100
-    0    0    0    0    2    0    9    C
+~0000 0000 0000 0000 0010 0000 1001 1100
+
  store A at sp
- 0000 0010 1000 0000 0000 0001 0101 0110
-    0    2    8    0    0    1    5    6
+~0000 0010 1000 0000 0000 0001 0101 0110
+
  next inst
- 0000 0000 0000 0011 0000 0000 0001 0011
-    0    0    0    3    0    0    1    3
+~0000 0000 0000 0011 0000 0000 0001 0011
  
  ----------------
  WRITE
  |----|
- | FF |
+>| FF |
  |----|
  
  Writes the value on the stack to IO
  
  write stack to IO
- 1000 0000 0000 0000 0000 0000 0001 0010
-    8    0    0    0    0    0    1    2
+~1000 0000 0000 0000 0000 0000 0001 0010
  
  increment sp & next inst
- 0000 0000 0000 0011 0011 0000 0001 0011
-    0    0    0    3    3    0    1    3
+~0000 0000 0000 0011 0011 0000 0001 0011
     
  ----------------
  
