@@ -2,11 +2,27 @@
 
  this is where I'm putting the ISA
  data is little endian
- spaces at the start of lines means they're ignored by the rom generator
+ spaces at the start of lines means they're ignored by programs parsing this
  other characters mark information
  
- > is an entry point, and is on the line with the instruction's opcode
+ . marks an instruction's primary mnemonic
+ , marks additional mnemonics for the same opcode
+ > is an entry point, and is on the line with the instruction's table
  ~ is a binary control word
+ 
+ arguments take the form <set of modifiers> <type>
+ arguments after the mnemonic are comma separated and different forms are separated by OR, e.g. "label OR const word"
+ mnemonic only types have an equivalent that is only different in how it's written in the assembly, written as (mnemonic only: <equivalent type>)
+ 
+ modifiers
+  - const refers to a constant value
+  - offset marks a label to be the difference between the instruction and label
+  - unsigned probably does nothing for the assembler but that isn't final
+ 
+ types
+  - byte = 1 byte
+  - word = 2 bytes, lower then upper
+  - label (mnemonic only: word)
 
  ----------------
  OPCODE
@@ -20,7 +36,7 @@
  0000 0000 0000 0000 0000 0000 0000 0000
  
  ----------------
- NOP
+.NOP
  |----|
 >| 00 |
  |----|
@@ -28,10 +44,10 @@
  Does nothing.
  
  next inst
-~0000 0000 0000 0011 0000 0000 0001 0011
+~0000 0000 0000 0011 0000 0000 0010 0011
  
  ----------------
- POP
+.POP
  |----|
 >| 01 |
  |----|
@@ -39,65 +55,179 @@
  Discards the top of the stack
  
  increment sp & next inst
-~0000 0000 0000 0011 0011 0000 0001 0011
+~0000 0000 0000 0011 0011 0000 0010 0011
  
  ----------------
- POP constant
- |----|---------------------|
->| 02 | const unsigned byte |
- |----|---------------------|
+.POP const unsigned byte
+ |----|------|
+>| 02 | byte |
+ |----|------|
  
  Pops n bytes from the stack
  Affects carry flag
  
  load a with sp low
-~0000 0000 0000 0000 0000 0000 1001 1010
+~0000 0000 0000 0000 0000 0001 0010 1010
  
  load b with constant
-~0000 0000 0000 0001 0000 0010 0001 0011
+~0000 0000 0000 0001 0000 0010 0010 0011
  
  add, store b
-~0000 0110 1010 0100 0000 0111 0001 0100
+~0000 0110 1010 0100 0000 0010 0010 0100
  
  load a with sp high
-~0000 0000 0000 0000 0000 0000 1011 1010
+~0000 0000 0000 0000 0000 0001 0110 1010
  
  add carry to a
-~0000 0000 0000 0000 0000 0001 1001 0100
+~0000 0000 0000 0000 0000 0001 0010 0100
  
  store ab to sp
-~0000 0000 0000 0000 0010 0000 0010 0000
+~0000 0000 0000 0000 0010 1000 0010 0000
  
  next inst
-~0000 0000 0000 0011 0000 0000 0001 0011
+~0000 0000 0000 0011 0000 0000 0010 0011
  
  ----------------
- PUSH constant
- |----|------------|
->| 04 | const byte |
- |----|------------|
+.PUSH const byte
+ |----|------|
+>| 04 | byte |
+ |----|------|
  
  Pushes a constant onto the stack
  
  decrement sp, load constant to A
-~0000 0000 0000 0001 0010 0000 1001 0011
+~0000 0000 0000 0001 0010 0001 0010 0011
 
  store A at sp
-~0000 0010 1000 0000 0000 0001 0101 0110
+~0000 0000 0000 0000 0000 0000 1011 0010
 
  next inst
-~0000 0000 0000 0011 0000 0000 0001 0011
+~0000 0000 0000 0011 0000 0000 0010 0011
     
  ----------------
- PUSH address
- |----|------------|
- | 05 | const word |
- |----|------------|
+.PUSH const word OR label
+ |----|------|
+>| 05 | word |
+ |----|------|
  
  Pushes an address onto the stack
+ the desired little-endian pop means we gotta reverse them, cool cool
+ we could just say constant args are big endian but thats inconsistent
+ 
+ decrement sp, load constant to A
+~0000 0000 0000 0001 0010 0001 0010 0011
+ 
+ load constant to B
+~0000 0000 0000 0001 0000 0010 0010 0011
+
+ store B at sp & decrement it
+~0000 0000 0000 0000 0010 0000 1011 0110
+
+ store A at sp
+~0000 0000 0000 0000 0000 0000 1011 0010
+
+ next inst
+~0000 0000 0000 0011 0000 0000 0010 0011
  
  ----------------
- READ
+.LOAD const word OR label
+ |----|------|
+>| 08 | word |
+ |----|------|
+ 
+ Pushes the value at the specified memory address onto the stack
+ 
+ load constant to B
+~0000 0000 0000 0001 0000 0010 0010 0011
+ 
+ load constant to A
+~0000 0000 0000 0001 0000 0001 0010 0011
+ 
+ load value at AB to A, decrement sp
+~0000 0000 0000 0000 0010 0001 0010 0000
+ 
+ store A at sp
+~0000 0000 0000 0000 0000 0000 1011 0010
+ 
+ next inst
+~0000 0000 0000 0011 0000 0000 0010 0011
+ 
+ ----------------
+.STORE const word OR label
+ |----|------|
+>| 0C | word |
+ |----|------|
+ 
+ Stores the top of the stack to the specified memory address
+ This instruction sets the base pointer to the specified memory address, use STOREPB to avoid this.
+ 
+ load constant to B
+~0000 0000 0000 0001 0000 0010 0010 0011
+ 
+ load constant to A
+~0000 0000 0000 0001 0000 0001 0010 0011
+
+ put AB in bp
+~0000 0000 0000 0000 0000 0100 0000 0000
+ 
+ load sp to A
+~0000 0000 0000 0000 0000 0001 0010 0010
+ 
+ store A at bp, increment sp
+~0000 0000 0000 0000 0011 0000 1011 0001
+ 
+ next inst
+~0000 0000 0000 0011 0000 0000 0010 0011
+
+ ----------------
+.STOREPB const word OR label
+ |----|------|
+>| 0D | word |
+ |----|------|
+ 
+ Stores the top of the stack to the specified memory address while preserving the base pointer
+ 
+ put bph in A, decrement sp
+~0000 0000 0000 0000 0010 0001 0110 1001
+ 
+ store A at sp
+~0000 0000 0000 0000 0000 0000 1011 0010
+ 
+ put bpl in A, decrement sp
+~0000 0000 0000 0000 0010 0001 0010 1001
+ 
+ store A at sp
+~0000 0000 0000 0000 0000 0000 1011 0010
+ 
+ load constant to B, increment sp
+~0000 0000 0000 0001 0011 0010 0010 0011
+ 
+ load constant to A, increment sp
+~0000 0000 0000 0001 0011 0001 0010 0011
+ 
+ put AB in bp
+~0000 0000 0000 0000 0000 0100 0000 0000
+ 
+ load sp to A, decrement sp
+~0000 0000 0000 0000 0010 0001 0010 0010
+ 
+ store A at bp, decrement sp
+~0000 0000 0000 0000 0010 0000 1011 0001
+ 
+ load sp to B, increment sp
+~0000 0000 0000 0000 0011 0010 0010 0010
+ 
+ load sp to A, increment sp
+~0000 0000 0000 0000 0011 0001 0010 0010
+ 
+ put AB in bp, increment sp
+~0000 0000 0000 0000 0011 0100 0000 0000
+ 
+ next inst
+~0000 0000 0000 0011 0000 0000 0010 0011
+ 
+ ----------------
+.READ
  |----|
 >| FE |
  |----|
@@ -105,16 +235,16 @@
  Reads the value from IO, placing it on the stack
  
  decrement sp, load IO to A
-~0000 0000 0000 0000 0010 0000 1001 1100
+~0000 0000 0000 0000 0010 0001 0010 1100
 
  store A at sp
-~0000 0010 1000 0000 0000 0001 0101 0110
+~0000 0000 0000 0000 0000 0000 1011 0010
 
  next inst
-~0000 0000 0000 0011 0000 0000 0001 0011
+~0000 0000 0000 0011 0000 0000 0010 0011
  
  ----------------
- WRITE
+.WRITE
  |----|
 >| FF |
  |----|
@@ -122,10 +252,10 @@
  Writes the value on the stack to IO
  
  write stack to IO
-~1000 0000 0000 0000 0000 0000 0001 0010
+~1000 0000 0000 0000 0000 0000 0010 0010
  
  increment sp & next inst
-~0000 0000 0000 0011 0011 0000 0001 0011
+~0000 0000 0000 0011 0011 0000 0010 0011
     
  ----------------
  
