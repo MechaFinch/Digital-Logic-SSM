@@ -32,6 +32,8 @@
  
  Description
  
+ operand stack
+ 
  Microcode
  0000 0000 0000 0000 0000 0000 0000 0000
  
@@ -42,6 +44,8 @@
  |----|
  
  Does nothing.
+ 
+ No change.
  
  next inst
 ~0000 0000 0000 0011 0000 0000 0010 0011
@@ -54,6 +58,9 @@
  
  Discards the top of the stack
  
+ ..., value ->
+ ...
+ 
  increment sp & next inst
 ~0000 0000 0000 0011 0011 0000 0010 0011
  
@@ -63,8 +70,11 @@
 >| 02 | byte |
  |----|------|
  
- Pops n bytes from the stack
+ Pops n bytes off the stack
  Affects carry flag
+ 
+ ..., value1, value2, ... valuen ->
+ ...
  
  load a with sp low
 ~0000 0000 0000 0000 0000 0001 0010 1010
@@ -88,12 +98,32 @@
 ~0000 0000 0000 0011 0000 0000 0010 0011
  
  ----------------
+.POP2
+ |----|
+>| 03 |
+ |----|
+ 
+ Pops 2 bytes off the stack
+ 
+ ..., value1, value2 ->
+ ...
+ 
+ increment sp
+~0000 0000 0000 0000 0011 0000 0000 0000
+ 
+ increment sp & next inst
+~0000 0000 0000 0011 0011 0000 0010 0011
+
+ ----------------
 .PUSH const byte
  |----|------|
 >| 04 | byte |
  |----|------|
  
  Pushes a constant onto the stack
+ 
+ ... ->
+ ..., value
  
  decrement sp, load constant to A
 ~0000 0000 0000 0001 0010 0001 0010 0011
@@ -113,6 +143,9 @@
  Pushes an address onto the stack
  the desired little-endian pop means we gotta reverse them, cool cool
  we could just say constant args are big endian but thats inconsistent
+ 
+ ... ->
+ ... val_h, val_l
  
  decrement sp, load constant to A
 ~0000 0000 0000 0001 0010 0001 0010 0011
@@ -137,6 +170,9 @@
  
  Pushes the value at the specified memory address onto the stack
  
+ ... ->
+ ..., value
+ 
  load constant to B
 ~0000 0000 0000 0001 0000 0010 0010 0011
  
@@ -153,13 +189,49 @@
 ~0000 0000 0000 0011 0000 0000 0010 0011
  
  ----------------
+.ALOAD
+ |----|
+>| 09 |
+ |----|
+ 
+ Pushes the value at [pointer + offset] onto the stack
+ 
+ ..., pointer_h, pointer_l, offset ->
+ ..., value
+ 
+ ----------------
+.ALOAD const word OR label
+ |----|------|
+>| 0A | word |
+ |----|------|
+ 
+ Pushes the value at [pointer + offset] onto the stack
+ 
+ ..., offset ->
+ ..., value
+ 
+ ----------------
+.PLOAD
+ |----|
+>| 0A |
+ |----|
+ 
+ Pushes the value at [pointer] onto the stack
+ 
+ ..., pointer_h, pointer_l ->
+ ..., value
+ 
+ ----------------
 .STORE const word OR label
  |----|------|
->| 0C | word |
+>| 10 | word |
  |----|------|
  
  Stores the top of the stack to the specified memory address
  This instruction sets the base pointer to the specified memory address, use STOREPB to avoid this.
+ 
+ ..., value ->
+ ...
  
  load constant to B
 ~0000 0000 0000 0001 0000 0010 0010 0011
@@ -182,10 +254,13 @@
  ----------------
 .STOREPB const word OR label
  |----|------|
->| 0D | word |
+>| 11 | word |
  |----|------|
  
  Stores the top of the stack to the specified memory address while preserving the base pointer
+ 
+ ..., value ->
+ ...
  
  put bph in A, decrement sp
 ~0000 0000 0000 0000 0010 0001 0110 1001
@@ -227,12 +302,51 @@
 ~0000 0000 0000 0011 0000 0000 0010 0011
  
  ----------------
+.ASTORE
+ |
+>| 12
+ |
+ 
+ ----------------
+.ASTOREPB
+ |
+>| 13
+ |
+ 
+ ----------------
+.ASTORE const word OR label
+ |
+>| 14
+ |
+ 
+ ----------------
+.ASTOREPB const word OR label
+ |
+>| 15
+ |
+ 
+ ----------------
+.PSTORE
+ |
+>| 16
+ |
+ 
+ ----------------
+.PSTOREPB
+ |
+>| 17
+ |
+ 
+ ----------------
 .READ
  |----|
 >| FE |
  |----|
  
  Reads the value from IO, placing it on the stack
+ 
+ ... ->
+ ..., value
  
  decrement sp, load IO to A
 ~0000 0000 0000 0000 0010 0001 0010 1100
@@ -250,6 +364,9 @@
  |----|
  
  Writes the value on the stack to IO
+ 
+ ..., value ->
+ ...
  
  write stack to IO
 ~1000 0000 0000 0000 0000 0000 0010 0010
