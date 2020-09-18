@@ -50,7 +50,7 @@
       <elementAttributes>
         <entry>
           <string>AddrBits</string>
-          <int>12</int>
+          <int>13</int>
         </entry>
         <entry>
           <string>Label</string>
@@ -167,7 +167,7 @@ b2,30023,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
         </entry>
         <entry>
           <string>lastDataFile</string>
-          <string>C:\Users\Alex\Desktop\Digital\gamer\control rom.hex</string>
+          <string>C:\Users\Cadet Robotics\Desktop\Digital\gaming\control rom.hex</string>
         </entry>
         <entry>
           <string>intFormat</string>
@@ -199,7 +199,7 @@ b2,30023,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
         </entry>
         <entry>
           <string>Bits</string>
-          <int>4</int>
+          <int>5</int>
         </entry>
       </elementAttributes>
       <pos x="640" y="1120"/>
@@ -209,11 +209,11 @@ b2,30023,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
       <elementAttributes>
         <entry>
           <string>Input Splitting</string>
-          <string>4,8</string>
+          <string>5,8</string>
         </entry>
         <entry>
           <string>Output Splitting</string>
-          <string>12</string>
+          <string>13</string>
         </entry>
       </elementAttributes>
       <pos x="760" y="1020"/>
@@ -319,7 +319,7 @@ b2,30023,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
         </entry>
         <entry>
           <string>Frequency</string>
-          <int>10</int>
+          <int>5</int>
         </entry>
       </elementAttributes>
       <pos x="520" y="60"/>
