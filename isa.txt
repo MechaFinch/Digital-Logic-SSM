@@ -15,7 +15,6 @@
  mnemonic only types have an equivalent that is only different in how it's written in the assembly, written as (mnemonic only: <equivalent type>)
  
  modifiers
-  - const refers to a constant value
   - offset marks a label to be the difference between the instruction and label
   - unsigned probably does nothing for the assembler but that isn't final
  
@@ -43,9 +42,9 @@
 >| 00 |
  |----|
  
- Does nothing.
+ Does nothing
  
- No change.
+ No change
  
  next inst
 ~0000 0000 0000 0011 0000 0000 0010 0011
@@ -56,7 +55,7 @@
 >| 01 |
  |----|
  
- Discards the top of the stack
+ Pops 1 byte
  
  ..., value ->
  ...
@@ -65,12 +64,29 @@
 ~0000 0000 0000 0011 0011 0000 0010 0011
  
  ----------------
-.POP const unsigned byte
+.POP2
+ |----|
+>| 02 |
+ |----|
+ 
+ Pops 2 bytes
+ 
+ ..., value1, value2 ->
+ ...
+ 
+ increment sp
+~0000 0000 0000 0000 0011 0000 0000 0000
+ 
+ increment sp & next inst
+~0000 0000 0000 0011 0011 0000 0010 0011
+ 
+ ----------------
+.POP unsigned byte
  |----|------|
->| 02 | byte |
+>| 03 | byte |
  |----|------|
  
- Pops n bytes off the stack
+ Pops n bytes
  Affects carry flag
  
  ..., value1, value2, ... valuen ->
@@ -82,7 +98,7 @@
  load b with constant
 ~0000 0000 0000 0001 0000 0010 0010 0011
  
- add, store b
+ addsc, store b
 ~0000 0110 1010 0100 0000 0010 0010 0100
  
  load a with sp high
@@ -98,29 +114,78 @@
 ~0000 0000 0000 0011 0000 0000 0010 0011
  
  ----------------
-.POP2
+.DUP
  |----|
->| 03 |
+>| 04 |
  |----|
  
- Pops 2 bytes off the stack
+ Duplicates the value
  
- ..., value1, value2 ->
- ...
+ ..., value ->
+ ..., value, value
  
- increment sp
-~0000 0000 0000 0000 0011 0000 0000 0000
+ ----------------
+.DUPO1
+ |----|
+>| 05 |
+ |----|
  
- increment sp & next inst
-~0000 0000 0000 0011 0011 0000 0010 0011
+ Duplicates the value over 1 byte
+ 
+ ..., value, byte ->
+ ..., value, byte, value
+ 
+ ----------------
+.DUPON unsigned byte
+ |----|------|
+>| 06 | byte |
+ |----|------|
+ 
+ Duplicates the value over n bytes
+ 
+ ..., value, byte1, byte2, ... byten ->
+ ..., value, byte1, byte2, ... byten, value
+ 
+ ----------------
+.DUP2
+ |----|
+>| 07 |
+ |----|
+ 
+ Duplicates the 2-byte value
+ 
+ ..., value_h, value_l ->
+ ..., value_h, value_l, value_h, value_l
+ 
+ ----------------
+.DUP2O1
+ |----|
+>| 08 |
+ |----|
+ 
+ Duplicates the 2-byte value over 1 byte
+ 
+ ..., value_h, value_l, byte ->
+ ..., value_h, value_l, byte, value_h, value_low
+ 
+ ----------------
+.DUP2ON unsigned byte
+ |----|------|
+>| 09 | byte |
+ |----|------|
+ 
+ Duplicates the 2-byte value over n bytes
+ 
+ ..., value_h, value_l, byte1, byte2, ... byten ->
+ ..., value_h, value_l, byte1, byte2, ... byten, value_h, value_l
 
  ----------------
-.PUSH const byte
+.PUSH byte
  |----|------|
->| 04 | byte |
+>| 0A | byte |
  |----|------|
  
- Pushes a constant onto the stack
+ Pushes a byte
  
  ... ->
  ..., value
@@ -135,14 +200,12 @@
 ~0000 0000 0000 0011 0000 0000 0010 0011
     
  ----------------
-.PUSH const word OR label
+.PUSH word OR label
  |----|------|
->| 05 | word |
+>| 0B | word |
  |----|------|
  
- Pushes an address onto the stack
- the desired little-endian pop means we gotta reverse them, cool cool
- we could just say constant args are big endian but thats inconsistent
+ Pushes an address
  
  ... ->
  ... val_h, val_l
@@ -163,12 +226,12 @@
 ~0000 0000 0000 0011 0000 0000 0010 0011
  
  ----------------
-.LOAD const word OR label
+.LOAD word OR label
  |----|------|
->| 08 | word |
+>| 10 | word |
  |----|------|
  
- Pushes the value at the specified memory address onto the stack
+ Pushes the value at the specified memory address
  
  ... ->
  ..., value
@@ -187,48 +250,99 @@
  
  next inst
 ~0000 0000 0000 0011 0000 0000 0010 0011
+
+ ----------------
+.PLOAD
+ |----|
+>| 11 |
+ |----|
+ 
+ Pushes the value at [pointer]
+ 
+ ..., pointer_h, pointer_l ->
+ ..., value
+ 
+ load sp to B, increment sp
+~0000 0000 0000 0000 0011 0010 0010 0010
+ 
+ load sp to A
+~0000 0000 0000 0000 0000 0001 0010 0010
+ 
+ load AB to A
+~0000 0000 0000 0000 0000 0001 0010 0000
+ 
+ store A to sp
+~0000 0000 0000 0000 0000 0000 1011 0010
+ 
+ next inst
+~0000 0000 0000 0011 0000 0000 0010 0011
  
  ----------------
 .ALOAD
  |----|
->| 09 |
+>| 12 |
  |----|
  
- Pushes the value at [pointer + offset] onto the stack
+ Pushes the value at [pointer + offset]
  
  ..., pointer_h, pointer_l, offset ->
  ..., value
  
+ load sp to A, increment sp
+~0000 0000 0000 0000 0011 0001 0010 0010
+ 
+ set B to 0
+~0000 0010 0000 1100 0000 0010 0010 0100
+ 
+ load sp to B, save carry of A-B
+~0000 0110 0001 1000 0000 0010 0010 0010
+ 
+ store sign extension to sp, decrement sp
+~0000 0000 0000 1100 0010 0000 1010 0110
+
+ addsc, store to sp, increment sp
+~0000 0110 1000 0100 0011 0000 1010 0110
+ 
+ load sp to B, increment sp
+~0000 0000 0000 0000 0011 0010 0010 0010
+ 
+ load sp to A, decrement sp
+~0000 0000 0000 0000 0010 0001 0010 0010
+ 
+ addwc, store to A, decrement sp
+~0000 0000 0000 0100 0010 0001 0010 0100
+ 
+ load sp to B, increment sp
+~0000 0000 0000 0000 0011 0010 0010 0010
+ 
+ load AB to A, increment sp
+~0000 0000 0000 0000 0011 0001 0010 0000
+ 
+ store A to sp
+~0000 0000 0000 0000 0000 0000 1011 0010
+ 
+ next inst
+~0000 0000 0000 0011 0000 0000 0010 0011
+ 
  ----------------
-.ALOAD const word OR label
+.ALOAD word OR label
  |----|------|
->| 0A | word |
+>| 13 | word |
  |----|------|
  
- Pushes the value at [pointer + offset] onto the stack
+ Pushes the value at [pointer + offset]
  
  ..., offset ->
  ..., value
  
  ----------------
-.PLOAD
- |----|
->| 0A |
- |----|
- 
- Pushes the value at [pointer] onto the stack
- 
- ..., pointer_h, pointer_l ->
- ..., value
- 
- ----------------
-.STORE const word OR label
+.STORE word OR label
  |----|------|
->| 10 | word |
+>| 18 | word |
  |----|------|
  
- Stores the top of the stack to the specified memory address
- This instruction sets the base pointer to the specified memory address, use STOREPB to avoid this.
+ Stores the value to the specified memory address
+ Sets the base pointer to the specified memory address, use STOREPB to avoid this
  
  ..., value ->
  ...
@@ -252,12 +366,12 @@
 ~0000 0000 0000 0011 0000 0000 0010 0011
 
  ----------------
-.STOREPB const word OR label
+.STOREPB word OR label
  |----|------|
->| 11 | word |
+>| 19 | word |
  |----|------|
  
- Stores the top of the stack to the specified memory address while preserving the base pointer
+ Stores the value to the specified memory address while preserving the base pointer
  
  ..., value ->
  ...
@@ -302,40 +416,73 @@
 ~0000 0000 0000 0011 0000 0000 0010 0011
  
  ----------------
-.ASTORE
- |
->| 12
- |
- 
- ----------------
-.ASTOREPB
- |
->| 13
- |
- 
- ----------------
-.ASTORE const word OR label
- |
->| 14
- |
- 
- ----------------
-.ASTOREPB const word OR label
- |
->| 15
- |
- 
- ----------------
 .PSTORE
- |
->| 16
- |
+ |----|
+>| 1A |
+ |----|
+ 
+ Stores the value to [pointer]
+ Sets the base pointer to the pointer, use PSTOREPB to avoid this
+ 
+ ..., pointer_h, pointer_l, value ->
+ ...
  
  ----------------
 .PSTOREPB
- |
->| 17
- |
+ |----|
+>| 1B |
+ |----|
+ 
+ Stores the value to [pointer] while preserving the base pointer
+ 
+ ..., pointer_h, pointer_l, value ->
+ ...
+ 
+ ----------------
+.ASTORE
+ |----|
+>| 1C |
+ |----|
+ 
+ Stores the value to [pointer + offset]
+ Sets the base pointer to the effective address, use ASTOREPB to avoid this
+ 
+ ..., pointer_h, pointer_l, offset, value ->
+ ...
+ 
+ ----------------
+.ASTOREPB
+ |----|
+>| 1D |
+ |----|
+ 
+ Stores the value to [pointer + offset] while preserving the base pointer
+ 
+ ..., pointer_h, pointer_l, offset, value ->
+ ...
+ 
+ ----------------
+.ASTORE word OR label
+ |----|------|
+>| 1E | word |
+ |----|------|
+ 
+ Stores the value to [pointer + offset]
+ Sets the base pointer to the effective address, use ASTOREPB to avoid this
+ 
+ ..., offset, value ->
+ ...
+ 
+ ----------------
+.ASTOREPB word OR label
+ |----|------|
+>| 1F | word |
+ |----|------|
+ 
+ Stores the value to [pointer + offset] while preserving the base pointer
+ 
+ ..., offset, value ->
+ ...
  
  ----------------
 .READ
@@ -375,22 +522,6 @@
 ~0000 0000 0000 0011 0011 0000 0010 0011
     
  ----------------
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
  
  
  
