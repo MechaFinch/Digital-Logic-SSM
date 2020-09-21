@@ -50,9 +50,55 @@
 ~0000 0000 0000 0011 0000 0000 0010 0011
  
  ----------------
+.PUSH byte
+ |----|------|
+>| 01 | byte |
+ |----|------|
+ 
+ Pushes a byte
+ 
+ ... ->
+ ..., value
+ 
+ decrement sp, load constant to A
+~0000 0000 0000 0001 0010 0001 0010 0011
+
+ store A at sp
+~0000 0000 0000 0000 0000 0000 1011 0010
+
+ next inst
+~0000 0000 0000 0011 0000 0000 0010 0011
+    
+ ----------------
+.PUSH word OR label
+ |----|------|
+>| 02 | word |
+ |----|------|
+ 
+ Pushes an address
+ 
+ ... ->
+ ... val_h, val_l
+ 
+ decrement sp, load constant to A
+~0000 0000 0000 0001 0010 0001 0010 0011
+ 
+ load constant to B
+~0000 0000 0000 0001 0000 0010 0010 0011
+
+ store B at sp & decrement it
+~0000 0000 0000 0000 0010 0000 1011 0110
+
+ store A at sp
+~0000 0000 0000 0000 0000 0000 1011 0010
+
+ next inst
+~0000 0000 0000 0011 0000 0000 0010 0011
+ 
+ ----------------
 .POP
  |----|
->| 01 |
+>| 03 |
  |----|
  
  Pops 1 byte
@@ -66,7 +112,7 @@
  ----------------
 .POP2
  |----|
->| 02 |
+>| 04 |
  |----|
  
  Pops 2 bytes
@@ -83,7 +129,7 @@
  ----------------
 .POP unsigned byte
  |----|------|
->| 03 | byte |
+>| 05 | byte |
  |----|------|
  
  Pops n bytes
@@ -114,9 +160,10 @@
 ~0000 0000 0000 0011 0000 0000 0010 0011
  
  ----------------
+ 
 .DUP
  |----|
->| 04 |
+>| 06 |
  |----|
  
  Duplicates the value
@@ -124,10 +171,19 @@
  ..., value ->
  ..., value, value
  
+ load sp to A, decrement sp
+~0000 0000 0000 0000 0010 0001 0010 0010
+ 
+ store A at sp
+~0000 0000 0000 0000 0000 0000 1011 0010
+
+ next inst
+~0000 0000 0000 0011 0000 0000 0010 0011
+ 
  ----------------
 .DUPO1
  |----|
->| 05 |
+>| 07 |
  |----|
  
  Duplicates the value over 1 byte
@@ -136,9 +192,20 @@
  ..., value, byte, value
  
  ----------------
+.DUPO2
+ |----|
+>| 08 |
+ |----|
+ 
+ Duplicates the value over 2 bytes
+ 
+ ..., value, byte1, byte2 ->
+ ..., value, byte1, byte2, value
+ 
+ ----------------
 .DUPON unsigned byte
  |----|------|
->| 06 | byte |
+>| 09 | byte |
  |----|------|
  
  Duplicates the value over n bytes
@@ -149,7 +216,7 @@
  ----------------
 .DUP2
  |----|
->| 07 |
+>| 0A |
  |----|
  
  Duplicates the 2-byte value
@@ -160,7 +227,7 @@
  ----------------
 .DUP2O1
  |----|
->| 08 |
+>| 0B |
  |----|
  
  Duplicates the 2-byte value over 1 byte
@@ -169,61 +236,50 @@
  ..., value_h, value_l, byte, value_h, value_low
  
  ----------------
+.DUP2O2
+ |----|
+>| 0C |
+ |----|
+ 
+ Duplicates the 2-byte value over 2 bytes
+ Sets the base pointer to the address of the original value_l, use DUP2O2PB to avoid this
+ 
+ ..., value_h, value_l, byte1, byte2 ->
+ ..., value_h, value_l, byte1, byte2, value_h, value_l
+ 
+ ----------------
+.DUP2O2PB
+ |----|
+>| 0D |
+ |----|
+ 
+ Duplicates the 2-byte value over 2 bytes, preserving the base pointer
+ 
+ ..., value_h, value_l, byte1, byte2 ->
+ ..., value_h, value_l, byte1, byte2, value_h, value_l
+ 
+ ----------------
 .DUP2ON unsigned byte
  |----|------|
->| 09 | byte |
+>| 0E | byte |
  |----|------|
  
  Duplicates the 2-byte value over n bytes
+ Sets the base pointer to the address of the original value_l, use DUP2ONPB to avoid this
  
  ..., value_h, value_l, byte1, byte2, ... byten ->
  ..., value_h, value_l, byte1, byte2, ... byten, value_h, value_l
-
+ 
  ----------------
-.PUSH byte
+.DUP2ONPB unsigned byte
  |----|------|
->| 0A | byte |
- |----|------|
- 
- Pushes a byte
- 
- ... ->
- ..., value
- 
- decrement sp, load constant to A
-~0000 0000 0000 0001 0010 0001 0010 0011
-
- store A at sp
-~0000 0000 0000 0000 0000 0000 1011 0010
-
- next inst
-~0000 0000 0000 0011 0000 0000 0010 0011
-    
- ----------------
-.PUSH word OR label
- |----|------|
->| 0B | word |
+>| 0F | byte |
  |----|------|
  
- Pushes an address
+ Duplicates the 2-byte value over n bytes, preserving the base pointer
  
- ... ->
- ... val_h, val_l
- 
- decrement sp, load constant to A
-~0000 0000 0000 0001 0010 0001 0010 0011
- 
- load constant to B
-~0000 0000 0000 0001 0000 0010 0010 0011
-
- store B at sp & decrement it
-~0000 0000 0000 0000 0010 0000 1011 0110
-
- store A at sp
-~0000 0000 0000 0000 0000 0000 1011 0010
-
- next inst
-~0000 0000 0000 0011 0000 0000 0010 0011
+ ..., value_h, value_l, byte1, byte2, ... byten ->
+ ..., value_h, value_l, byte1, byte2, ... byten, value_h, value_l
  
  ----------------
 .LOAD word OR label
@@ -291,17 +347,14 @@
  load sp to A, increment sp
 ~0000 0000 0000 0000 0011 0001 0010 0010
  
- set B to 0
-~0000 0010 0000 1100 0000 0010 0010 0100
- 
- load sp to B, save carry of A-B
-~0000 0110 0001 1000 0000 0010 0010 0010
+ load sp to B, save inverse carry of 2A
+~0000 0111 1011 0000 0000 0010 0010 0010
  
  store sign extension to sp, decrement sp
 ~0000 0000 0000 1100 0010 0000 1010 0110
 
  addsc, store to sp, increment sp
-~0000 0110 1000 0100 0011 0000 1010 0110
+~0000 0110 1010 0100 0011 0000 1010 0110
  
  load sp to B, increment sp
 ~0000 0000 0000 0000 0011 0010 0010 0010
@@ -310,7 +363,7 @@
 ~0000 0000 0000 0000 0010 0001 0010 0010
  
  addwc, store to A, decrement sp
-~0000 0000 0000 0100 0010 0001 0010 0100
+~0000 0000 0010 0100 0010 0001 0010 0100
  
  load sp to B, increment sp
 ~0000 0000 0000 0000 0011 0010 0010 0010
