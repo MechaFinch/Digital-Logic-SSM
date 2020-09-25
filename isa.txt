@@ -224,6 +224,24 @@
  ..., value_h, value_l ->
  ..., value_h, value_l, value_h, value_l
  
+ load sp to A, increment sp
+~0000 0000 0000 0000 0011 0001 0010 0010
+
+ load sp to B, decrement sp
+~0000 0000 0000 0000 0010 0010 0010 0010
+ 
+ decrement sp
+~0000 0000 0000 0000 0010 0000 0000 0000
+
+ store B at sp, decrement sp
+~0000 0000 0000 0000 0010 0000 1011 0110
+ 
+ store A at sp
+~0000 0000 0000 0000 0000 0000 1011 0010
+
+ next inst
+~0000 0000 0000 0011 0000 0000 0010 0011
+ 
  ----------------
 .DUP2O1
  |----|
@@ -387,6 +405,39 @@
  
  ..., offset ->
  ..., value
+ 
+ load sp to A, decrement sp
+~0000 0000 0000 0000 0010 0001 0010 0010
+ 
+ load ip to B, save inverse carry of 2A
+~0000 0111 1011 0001 0000 0010 0010 0011
+ 
+ store sign extension to sp, increment sp
+~0000 0000 0000 1100 0011 0000 1010 0110
+ 
+ addsc, store to sp, decrement sp
+~0000 0110 1010 0100 0010 0000 1010 0110
+ 
+ load sp to B, increment sp
+~0000 0000 0000 0000 0011 0010 0010 0010
+ 
+ load ip to A
+~0000 0000 0000 0001 0000 0001 0010 0011
+ 
+ addwc, store to A
+~0000 0000 0010 0100 0000 0001 0010 0100
+ 
+ load sp to B
+~0000 0000 0000 0000 0000 0010 0010 0010
+ 
+ load AB to A
+~0000 0000 0000 0000 0000 0001 0010 0000
+ 
+ store A to sp
+~0000 0000 0000 0000 0000 0000 1011 0010
+ 
+ next inst
+~0000 0000 0000 0011 0000 0000 0010 0011
  
  ----------------
 .STORE word OR label
