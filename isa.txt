@@ -300,9 +300,85 @@
  ..., value_h, value_l, byte1, byte2, ... byten, value_h, value_l
  
  ----------------
+.SWAP
+ |----|
+>| 10 |
+ |----|
+ 
+ Swaps the top 2 bytes
+ 
+ ..., value1, value2 ->
+ ..., value2, value1
+ 
+ load sp to A, increment sp
+~0000 0000 0000 0000 0011 0001 0010 0010
+ 
+ load sp to B
+~0000 0000 0000 0000 0000 0010 0010 0010
+ 
+ store A at sp, decrement sp
+~0000 0000 0000 0000 0010 0000 1011 0010
+ 
+ store B at sp
+~0000 0000 0000 0000 0000 0000 1011 0110
+ 
+ next inst
+~0000 0000 0000 0011 0000 0000 0010 0011
+ 
+ ----------------
+.SWAP2
+ |----|
+>| 11 |
+ |----|
+ 
+ Swaps the top 2 words
+ 
+ ..., value1_h, value1_l, value2_h, value2_l ->
+ ..., value2_h, value2_l, value1_h, value1_l
+ 
+ load sp to A, increment sp
+~0000 0000 0000 0000 0011 0001 0010 0010
+ 
+ increment sp
+~0000 0000 0000 0000 0011 0000 0000 0000
+ 
+ load sp to B
+~0000 0000 0000 0000 0000 0010 0010 0010
+ 
+ store A at sp, decrement sp
+~0000 0000 0000 0000 0010 0000 1011 0010
+ 
+ load sp to A, decrement sp
+~0000 0000 0000 0000 0010 0001 0010 0010
+ 
+ store B at sp, increment sp
+~0000 0000 0000 0000 0011 0000 1011 0110
+ 
+ increment sp
+~0000 0000 0000 0000 0011 0000 0000 0000
+ 
+ increment sp
+~0000 0000 0000 0000 0011 0000 0000 0000
+ 
+ load sp to B
+~0000 0000 0000 0000 0000 0010 0010 0010
+ 
+ store A at sp, decrement sp
+~0000 0000 0000 0000 0010 0000 1011 0010
+ 
+ decrement sp
+~0000 0000 0000 0000 0010 0000 0000 0000
+ 
+ store B at sp, decrement sp
+~0000 0000 0000 0000 0010 0000 1011 0110
+ 
+ next inst
+~0000 0000 0000 0011 0000 0000 0010 0011
+ 
+ ----------------
 .LOAD word OR label
  |----|------|
->| 10 | word |
+>| 20 | word |
  |----|------|
  
  Pushes the value at the specified memory address
@@ -328,7 +404,7 @@
  ----------------
 .PLOAD
  |----|
->| 11 |
+>| 21 |
  |----|
  
  Pushes the value at [pointer]
@@ -354,7 +430,7 @@
  ----------------
 .ALOAD
  |----|
->| 12 |
+>| 22 |
  |----|
  
  Pushes the value at [pointer + offset]
@@ -398,7 +474,7 @@
  ----------------
 .ALOAD word OR label
  |----|------|
->| 13 | word |
+>| 23 | word |
  |----|------|
  
  Pushes the value at [pointer + offset]
@@ -442,7 +518,7 @@
  ----------------
 .STORE word OR label
  |----|------|
->| 18 | word |
+>| 28 | word |
  |----|------|
  
  Stores the value to the specified memory address
@@ -472,7 +548,7 @@
  ----------------
 .STOREPB word OR label
  |----|------|
->| 19 | word |
+>| 29 | word |
  |----|------|
  
  Stores the value to the specified memory address while preserving the base pointer
@@ -522,7 +598,7 @@
  ----------------
 .PSTORE
  |----|
->| 1A |
+>| 2A |
  |----|
  
  Stores the value to [pointer]
@@ -534,7 +610,7 @@
  ----------------
 .PSTOREPB
  |----|
->| 1B |
+>| 2B |
  |----|
  
  Stores the value to [pointer] while preserving the base pointer
@@ -545,7 +621,7 @@
  ----------------
 .ASTORE
  |----|
->| 1C |
+>| 2C |
  |----|
  
  Stores the value to [pointer + offset]
@@ -557,7 +633,7 @@
  ----------------
 .ASTOREPB
  |----|
->| 1D |
+>| 2D |
  |----|
  
  Stores the value to [pointer + offset] while preserving the base pointer
@@ -568,7 +644,7 @@
  ----------------
 .ASTORE word OR label
  |----|------|
->| 1E | word |
+>| 2E | word |
  |----|------|
  
  Stores the value to [pointer + offset]
@@ -580,7 +656,7 @@
  ----------------
 .ASTOREPB word OR label
  |----|------|
->| 1F | word |
+>| 2F | word |
  |----|------|
  
  Stores the value to [pointer + offset] while preserving the base pointer
