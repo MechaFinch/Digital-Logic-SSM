@@ -16,6 +16,7 @@
  
  modifiers
   - offset marks a label to be the difference between the instruction and label
+  - short marks an offset label as being limited to the range +127 -128 (1 byte)
   - unsigned probably does nothing for the assembler but that isn't final
  
  types
@@ -699,6 +700,114 @@
  
  ----------------
 .DECBP
+ 
+ ----------------
+.CEZ
+ 
+ ----------------
+.CNZ
+ 
+ ----------------
+.CGZ
+ 
+ ----------------
+.CGEZ
+ 
+ ----------------
+.CLZ
+ 
+ ----------------
+.CLEZ
+
+ ----------------
+.CE
+ 
+ ----------------
+.CNE
+ 
+ ----------------
+.CG
+ 
+ ----------------
+.CGE
+ 
+ ----------------
+.CL
+ 
+ ----------------
+.CLE
+ 
+ ----------------
+.CEI byte
+ 
+ ----------------
+.CNEI byte
+ 
+ ----------------
+.CGI byte
+ 
+ ----------------
+.CGEI byte
+ 
+ ----------------
+.CLI byte
+ 
+ ----------------
+.CLEI byte
+ 
+ ----------------
+.JMPS
+ 
+ ----------------
+.JMPS byte OR short offset label
+ 
+ ----------------
+.JMPSC
+ 
+ ----------------
+.JMPSC byte OR short offset label
+ 
+ ----------------
+.JMPSN
+ 
+ ----------------
+.JMPSN byte OR short offset label
+ 
+ ----------------
+.JMPL
+ 
+ ----------------
+.JMPL word OR label
+ 
+ ----------------
+.JMPLC
+ 
+ ----------------
+.JMPLC word OR label
+ 
+ ----------------
+.JMPLN
+ 
+ ----------------
+.JMPLN word OR label
+ 
+ ----------------
+.CALL
+ 
+ ----------------
+.CALL word
+ 
+ ----------------
+.CALLPB
+ 
+ ----------------
+.CALLPB word
+ 
+ ----------------
+.RET
+ 
+ ----------------
+.RETPB
  
  ----------------
 .READ
