@@ -795,19 +795,37 @@
 .CALL
  
  ----------------
-.CALL word
+.CALL word OR label
+ 
+ ----------------
+.CALLV
+ 
+ ----------------
+.CALLV word, byte OR label, byte
  
  ----------------
 .CALLPB
  
  ----------------
-.CALLPB word
+.CALLPB word OR label
+ 
+ ----------------
+.CALLVPB
+ 
+ ----------------
+.CALLVPB word, unsigned byte OR label, unsigned byte
  
  ----------------
 .RET
  
  ----------------
+.RET unsigned byte
+ 
+ ----------------
 .RETPB
+ 
+ ----------------
+.RETPB unsigned byte
  
  ----------------
 .READ
