@@ -1,4 +1,4 @@
-// this would be in a package but the project is in a different folder than the repo
+package mechafinch.ssm.controlrom;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
