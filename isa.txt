@@ -517,6 +517,28 @@
 ~0000 0000 0000 0011 0000 0000 0010 0011
  
  ----------------
+.BPLOAD
+ |----|
+>| 24 |
+ |----|
+ 
+ Pushes the value at [base pointer]
+ 
+ ... ->
+ ..., value
+ 
+ ----------------
+.BPALOAD
+ |----|
+>| 25 |
+ |----|
+ 
+ Pushes the value at [base pointer + offset]
+ 
+ ..., offset ->
+ ..., value
+ 
+ ----------------
 .STORE word OR label
  |----|------|
 >| 28 | word |
@@ -666,12 +688,6 @@
  ...
  
  ----------------
-.BPLOAD
- 
- ----------------
-.BPALOAD
- 
- ----------------
 .BPSTORE
  
  ----------------
@@ -757,6 +773,47 @@
  
  ----------------
 .JMPS
+ |----|
+>| 80 |
+ |----|
+ 
+ Jumps by the 1-byte displacement
+ 
+ ..., disp ->
+ ...
+ 
+ load sp to A
+~0000 0000 0000 0000 0000 0001 0010 0010
+ 
+ decrement A
+~0000 0010 1011 1100 0000 0001 0010 0100
+ 
+ put ipl in B, save inverse carry of 2A
+~0000 0111 1011 0000 0000 0010 0010 1011
+ 
+ store sign extension to sp, decrement sp
+~0000 0000 0000 1100 0010 0000 1010 0110
+ 
+ addsc, store to sp, increment sp
+~0000 0110 1010 0100 0011 0000 1010 0110
+ 
+ load sp to B, decrement sp
+~0000 0000 0000 0000 0010 0010 0010 0010
+ 
+ put iph in A
+~0000 0000 0000 0000 0000 0001 0110 1011
+ 
+ addwc, store to A
+~0000 0000 0010 0100 0000 0001 0010 0100
+ 
+ load sp to B, increment sp
+~0000 0000 0000 0000 0011 0010 0010 0010
+ 
+ put AB in ip, increment sp
+~0000 0000 0000 0001 1011 0000 0000 0000
+ 
+ next inst
+~0000 0000 0000 0011 0000 0000 0010 0011
  
  ----------------
 .JMPS byte OR short offset label
