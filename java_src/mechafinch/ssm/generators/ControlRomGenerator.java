@@ -1,4 +1,4 @@
-package mechafinch.ssm.controlrom;
+package mechafinch.ssm.generators;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -40,6 +40,7 @@ public class ControlRomGenerator {
 		
 		if(args.length != 0 && args.length != 2 && args.length != 4) { // bad
 			printUsage("Invalid arguments");
+			System.exit(0);
 		}
 		
 		// but not yet

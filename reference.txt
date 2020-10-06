@@ -1,0 +1,252 @@
+
+This is a reference for the ISA that only includes the necessary details
+in a compact form. Since the main ISA includes all possible information
+(like microcode) it's annoying to search sometimes.
+
+<opcode> MNEMONIC arguments
+<STACK EFFECTS>
+
+This file is generated from the ISA.
+
+
+00 NOP
+ No change
+
+01 PUSH byte
+ ... ->
+ ..., value
+
+02 PUSH word OR label
+ ... ->
+ ..., val_h, val_l
+
+03 POP
+ ..., value ->
+ ...
+
+04 POP2
+ ..., value1, value2 ->
+ ...
+
+05 POP unsigned byte
+ ..., value1, value2, ... valuen ->
+ ...
+
+06 DUP
+ ..., value ->
+ ..., value, value
+
+07 DUPO1
+ ..., value, byte ->
+ ..., value, byte, value
+
+08 DUPO2
+ ..., value, byte1, byte2 ->
+ ..., value, byte1, byte2, value
+
+09 DUPON unsigned byte
+ ..., value, byte1, byte2, ... byten ->
+ ..., value, byte1, byte2, ... byten, value
+
+0A DUP2
+ ..., value_h, value_l ->
+ ..., value_h, value_l, value_h, value_l
+
+0B DUP2O1
+ ..., value_h, value_l, byte ->
+ ..., value_h, value_l, byte, value_h, value_low
+
+0C DUP2O2
+ ..., value_h, value_l, byte1, byte2 ->
+ ..., value_h, value_l, byte1, byte2, value_h, value_l
+
+0D DUP2O2PB
+ ..., value_h, value_l, byte1, byte2 ->
+ ..., value_h, value_l, byte1, byte2, value_h, value_l
+
+0E DUP2ON unsigned byte
+ ..., value_h, value_l, byte1, byte2, ... byten ->
+ ..., value_h, value_l, byte1, byte2, ... byten, value_h, value_l
+
+0F DUP2ONPB unsigned byte
+ ..., value_h, value_l, byte1, byte2, ... byten ->
+ ..., value_h, value_l, byte1, byte2, ... byten, value_h, value_l
+
+10 SWAP
+ ..., value1, value2 ->
+ ..., value2, value1
+
+11 SWAP2
+ ..., value1_h, value1_l, value2_h, value2_l ->
+ ..., value2_h, value2_l, value1_h, value1_l
+
+20 LOAD word OR label
+ ... ->
+ ..., value
+
+21 PLOAD
+ ..., pointer_h, pointer_l ->
+ ..., value
+
+22 ALOAD
+ ..., pointer_h, pointer_l, offset ->
+ ..., value
+
+23 ALOAD word OR label
+ ..., offset ->
+ ..., value
+
+24 BPLOAD
+ ... ->
+ ..., value
+
+25 BPALOAD
+ ..., offset ->
+ ..., value
+
+28 STORE word OR label
+ ..., value ->
+ ...
+
+29 STOREPB word OR label
+ ..., value ->
+ ...
+
+2A PSTORE
+ ..., pointer_h, pointer_l, value ->
+ ...
+
+2B PSTOREPB
+ ..., pointer_h, pointer_l, value ->
+ ...
+
+2C ASTORE
+ ..., pointer_h, pointer_l, offset, value ->
+ ...
+
+2D ASTOREPB
+ ..., pointer_h, pointer_l, offset, value ->
+ ...
+
+2E ASTORE word OR label
+ ..., offset, value ->
+ ...
+
+2F ASTOREPB word OR label
+ ..., offset, value ->
+ ...
+
+ BPSTORE
+
+ BPASTORE
+
+ BPASTOREPB
+
+ PUSHBP
+
+ POPBP
+
+ SETBP
+
+ PUSHS
+
+ POPS
+
+ INCBP
+
+ DECBP
+
+ CEZ
+
+ CNZ
+
+ CGZ
+
+ CGEZ
+
+ CLZ
+
+ CLEZ
+
+ CE
+
+ CNE
+
+ CG
+
+ CGE
+
+ CL
+
+ CLE
+
+ CEI byte
+
+ CNEI byte
+
+ CGI byte
+
+ CGEI byte
+
+ CLI byte
+
+ CLEI byte
+
+80 JMPS
+ ..., disp ->
+ ...
+
+81 JMPS byte OR short offset label
+
+ JMPSC
+
+ JMPSC byte OR short offset label
+
+ JMPSN
+
+ JMPSN byte OR short offset label
+
+ JMPL
+
+ JMPL word OR label
+
+ JMPLC
+
+ JMPLC word OR label
+
+ JMPLN
+
+ JMPLN word OR label
+
+ CALL
+
+ CALL word OR label
+
+ CALLV
+
+ CALLV word, byte OR label, byte
+
+ CALLPB
+
+ CALLPB word OR label
+
+ CALLVPB
+
+ CALLVPB word, unsigned byte OR label, unsigned byte
+
+ RET
+
+ RET unsigned byte
+
+ RETPB
+
+ RETPB unsigned byte
+
+FE READ
+ ... ->
+ ..., value
+
+FF WRITE
+ ..., value ->
+ ...
+
