@@ -136,7 +136,7 @@
  Pops n bytes
  Affects carry flag
  
- ..., value1, value2, ... valuen ->
+ ..., <n bytes> ->
  ...
  
  load a with sp low
@@ -211,8 +211,8 @@
  
  Duplicates the value over n bytes
  
- ..., value, byte1, byte2, ... byten ->
- ..., value, byte1, byte2, ... byten, value
+ ..., value, <n bytes> ->
+ ..., value, <n bytes>, value
  
  ----------------
 .DUP2
@@ -286,8 +286,8 @@
  Duplicates the 2-byte value over n bytes
  Sets the base pointer to the address of the original value_l, use DUP2ONPB to avoid this
  
- ..., value_h, value_l, byte1, byte2, ... byten ->
- ..., value_h, value_l, byte1, byte2, ... byten, value_h, value_l
+ ..., value_h, value_l, <n bytes> ->
+ ..., value_h, value_l, <n bytes>, value_l
  
  ----------------
 .DUP2ONPB unsigned byte
@@ -297,8 +297,8 @@
  
  Duplicates the 2-byte value over n bytes, preserving the base pointer
  
- ..., value_h, value_l, byte1, byte2, ... byten ->
- ..., value_h, value_l, byte1, byte2, ... byten, value_h, value_l
+ ..., value_h, value_l, <n bytes> ->
+ ..., value_h, value_l, <n bytes>, value_h, value_l
  
  ----------------
 .SWAP
@@ -515,11 +515,33 @@
  
  next inst
 ~0000 0000 0000 0011 0000 0000 0010 0011
+
+ ----------------
+.WALOAD
+ |----|------|
+>| 24 | word |
+ |----|------|
+ 
+ Pushes the value at [pointer + offset]
+ 
+ ..., offset_h, offset_l ->
+ ..., value
+ 
+ ----------------
+.WALOAD word OR label
+ |----|------|
+>| 25 | word |
+ |----|------|
+ 
+ Pushes the value at [pointer + offset]
+ 
+ ..., offset_h, offset_l ->
+ ..., value
  
  ----------------
 .BPLOAD
  |----|
->| 24 |
+>| 26 |
  |----|
  
  Pushes the value at [base pointer]
@@ -530,7 +552,7 @@
  ----------------
 .BPALOAD
  |----|
->| 25 |
+>| 27 |
  |----|
  
  Pushes the value at [base pointer + offset]
@@ -539,9 +561,20 @@
  ..., value
  
  ----------------
+.BPWALOAD
+ |----|
+>| 28 |
+ |----|
+ 
+ Pushes the value at [base pointer + offset]
+ 
+ ..., offset_h, offset_l ->
+ ..., value
+ 
+ ----------------
 .STORE word OR label
  |----|------|
->| 28 | word |
+>| 29 | word |
  |----|------|
  
  Stores the value to the specified memory address
@@ -571,7 +604,7 @@
  ----------------
 .STOREPB word OR label
  |----|------|
->| 29 | word |
+>| 2A | word |
  |----|------|
  
  Stores the value to the specified memory address while preserving the base pointer
@@ -621,7 +654,7 @@
  ----------------
 .PSTORE
  |----|
->| 2A |
+>| 2B |
  |----|
  
  Stores the value to [pointer]
@@ -633,7 +666,7 @@
  ----------------
 .PSTOREPB
  |----|
->| 2B |
+>| 2C |
  |----|
  
  Stores the value to [pointer] while preserving the base pointer
@@ -644,7 +677,7 @@
  ----------------
 .ASTORE
  |----|
->| 2C |
+>| 2D |
  |----|
  
  Stores the value to [pointer + offset]
@@ -656,7 +689,7 @@
  ----------------
 .ASTOREPB
  |----|
->| 2D |
+>| 2E |
  |----|
  
  Stores the value to [pointer + offset] while preserving the base pointer
@@ -667,7 +700,7 @@
  ----------------
 .ASTORE word OR label
  |----|------|
->| 2E | word |
+>| 2F | word |
  |----|------|
  
  Stores the value to [pointer + offset]
@@ -679,7 +712,7 @@
  ----------------
 .ASTOREPB word OR label
  |----|------|
->| 2F | word |
+>| 30 | word |
  |----|------|
  
  Stores the value to [pointer + offset] while preserving the base pointer
@@ -688,13 +721,154 @@
  ...
  
  ----------------
+.WASTORE
+ |----|
+>| 31 |
+ |----|
+ 
+ Stores the value to [pointer + offset]
+ Sets the base pointer to the effective address, use WASTOREPB to avoid this
+ 
+ ..., pointer_h, pointer_l, offset_h, offset_l, value ->
+ ...
+ 
+ ----------------
+.WASTOREPB
+ |----|
+>| 32 |
+ |----|
+ 
+ Stores the value to [pointer + offset] while preserving the base pointer
+ 
+ ..., pointer_h, pointer_l, offset_h, offset_l, value ->
+ ...
+ 
+ ----------------
+.WASTORE word OR label
+ |----|------|
+>| 33 | word |
+ |----|------|
+ 
+ Stores the value to [pointer + offset]
+ Sets the base pointer to the effective address, use WASTOREPB to avoid this
+ 
+ ..., offset_h, offset_l, value ->
+ ...
+ 
+ ----------------
+.WASTOREPB word OR label
+ |----|------|
+>| 34 | word |
+ |----|------|
+ 
+ Stores the value to [pointer + offset] while preserving the base pointer
+ 
+ ..., offset_h, offset_l, value ->
+ ...
+ 
+ ----------------
 .BPSTORE
+ |----|
+>| 35 |
+ |----|
+ 
+ Stores the value to [base pointer]
+ 
+ ..., value ->
+ ...
  
  ----------------
 .BPASTORE
+ |----|
+>| 36 |
+ |----|
+ 
+ Stores the value to [base pointer + offset]
+ Sets the base pointer to the effective address, use BPASTOREPB to avoid this
+ 
+ ..., offset, value ->
+ ...
  
  ----------------
 .BPASTOREPB
+ |----|
+>| 37 |
+ |----|
+ 
+ Stores the value to [base pointer + offset] while preserving the base pointer
+ 
+ ..., offset, value ->
+ ...
+ 
+ ----------------
+.BPASTORE byte
+ |----|------|
+>| 38 | byte |
+ |----|------|
+ 
+ Stores the value to [base pointer + offset]
+ Sets the base pointer to the effective address, use BPASTOREPB to avoid this
+ 
+ ..., value ->
+ ...
+ 
+ ----------------
+.BPASTOREPB byte
+ |----|------|
+>| 39 | byte |
+ |----|------|
+ 
+ Stores the value to [base pointer + offset] while preserving the base pointer
+ 
+ ..., value ->
+ ...
+ 
+ ----------------
+.BPWASTORE
+ |----|
+>| 3A |
+ |----|
+ 
+ Stores the value to [base pointer + offset]
+ Sets the base pointer to the effective address, use PBWASTOREPB to avoid this
+ 
+ ..., offset_h, offset_l, value ->
+ ...
+ 
+ ----------------
+.BPWASTOREPB
+ |----|
+>| 3B |
+ |----|
+ 
+ Stores the value to [base pointer + offset] while preserving the base pointer
+ 
+ ..., offset_h, offset_l, value ->
+ ...
+ 
+ ----------------
+.BPWASTORE word
+ |----|
+>| 3C |
+ |----|
+ 
+ Stores the value to [base pointer + offset]
+ Sets the base pointer to the effective address, use BPWASTOREPB to avoid this
+ 
+ ..., value ->
+ ...
+ 
+ ----------------
+.BPWASTOREPB word
+ |----|
+>| 3D |
+ |----|
+ 
+ Stores the value to [base pointer + offset] while preserving the base pointer
+ Ah long mnemonics: Base Pointer Word-Index Array Store, Preserve Base
+ 
+ ..., value ->
+ ...
  
  ----------------
 .PUSHBP
@@ -777,16 +951,13 @@
 >| 80 |
  |----|
  
- Jumps by the 1-byte displacement
+ Jumps by the 1-byte displacement relative to the next instruction
  
  ..., disp ->
  ...
  
  load sp to A
 ~0000 0000 0000 0000 0000 0001 0010 0010
- 
- decrement A
-~0000 0010 1011 1100 0000 0001 0010 0100
  
  put ipl in B, save inverse carry of 2A
 ~0000 0111 1011 0000 0000 0010 0010 1011
@@ -821,18 +992,15 @@
 >| 81 | byte |
  |----|------|
  
- Jumps by the 1-byte displacement
+ Jumps by the 1-byte displacement relative to the next instruction
  
- No change.
+ No change
  
- load ip to A, no increment
-~0000 0000 0000 0000 0000 0001 0010 0011
+ load ip to A
+~0000 0000 0000 0001 0000 0001 0010 0011
  
- decrement A, decrement sp
-~0000 0010 1011 1100 0010 0001 0010 0100
- 
- put ipl in B, save inverse carry of 2A
-~0000 0111 1011 0000 0000 0010 0010 1011
+ put ipl in B, save inverse carry of 2A, decrement sp
+~0000 0111 1011 0000 0010 0010 0010 1011
  
  store sign extension to sp, decrement sp
 ~0000 0000 0000 1100 0010 0000 1010 0110
@@ -860,69 +1028,185 @@
  
  ----------------
 .JMPSC
+ |----|
+>| 82 |
+ |----|
+ 
+ Jumps by the 1-byte displacement relative to the next instruction if condition is set
+ 
+ ..., disp ->
+ ...
  
  ----------------
 .JMPSC byte OR short offset label
+ |----|------|
+>| 83 | byte |
+ |----|------|
+ 
+ Jumps by the 1-byte displacement relative to the next instruction if condition is set
+ 
+ No change
  
  ----------------
 .JMPSN
+ |----|
+>| 84 |
+ |----|
+ 
+ Jumps by the 1-byte displacement relative to the next instruction if condition is not set
+ 
+ ..., disp ->
+ ...
  
  ----------------
 .JMPSN byte OR short offset label
+ |----|------|
+>| 85 | byte |
+ |----|------|
+ 
+ Jumps by the 1-byte displacement relative to the next instruction if condition is not set
+ 
+ No change
  
  ----------------
 .JMPL
+ |----|
+>| 86 |
+ |----|
+ 
+ Jumps to the address
+ 
+ ..., addr_h, addr_l ->
+ ...
  
  ----------------
 .JMPL word OR label
+ |----|------|
+>| 87 | word |
+ |----|------|
+ 
+ Jumps to the address
+ 
+ No change
  
  ----------------
 .JMPLC
+ |----|
+>| 88 |
+ |----|
+ 
+ Jumps to the address if condition is set
+ 
+ ..., addr_h, addr_l ->
+ ...
  
  ----------------
 .JMPLC word OR label
+ |----|------|
+>| 89 | word |
+ |----|------|
+ 
+ Jumps to the address if condition is set
+ 
+ No change
  
  ----------------
 .JMPLN
+ |----|
+>| 8A |
+ |----|
+ 
+ Jumps to the address if condition is not set
+ 
+ ..., addr_h, addr_l ->
+ ...
  
  ----------------
 .JMPLN word OR label
+ |----|------|
+>| 8B | word |
+ |----|------|
+ 
+ Jumps to the address if condition is not set
+ 
+ No change
  
  ----------------
 .CALL
+ |----|
+>| 8C |
+ |----|
+ 
+ Pushes IP then jumps to the address
+ 
+ ..., addr_h, addr_l ->
+ ..., ip_h, ip_l
  
  ----------------
 .CALL word OR label
+ |----|------|
+>| 8D | word |
+ |----|------|
  
- ----------------
-.CALLV
+ Pushes IP then jumps to the address
  
- ----------------
-.CALLV word, byte OR label, byte
- 
- ----------------
-.CALLPB
- 
- ----------------
-.CALLPB word OR label
- 
- ----------------
-.CALLVPB
- 
- ----------------
-.CALLVPB word, unsigned byte OR label, unsigned byte
+ ... ->
+ ..., ip_h, ip_l
  
  ----------------
 .RET
+ |----|
+>| 8E |
+ |----|
+ 
+ Pops IP
+ 
+ ..., ip_h, ip_l ->
+ ...
  
  ----------------
 .RET unsigned byte
+ |----|
+>| 8F |
+ |----|
+ 
+ Pops IP then pops n bytes
+ 
+ ..., <n bytes>, ip_h, ip_l ->
+ ...
+
+ ----------------
+.ENTER byte
+ |----|------|
+>| 90 | byte |
+ |----|------|
+ 
+ Pushes BP, sets BP to SP, adds the value to SP
+ 
+ ... ->
+ ..., bp_h, bp_l, <value bytes of uninitialized data>
  
  ----------------
-.RETPB
+.ENTER word
+ |----|------|
+>| 91 | word |
+ |----|------|
+ 
+ Pushes BP, sets BP to SP, adds the value to SP
+ 
+ ... ->
+ ..., bp_h, bp_l, <value bytes of uninitialized data>
  
  ----------------
-.RETPB unsigned byte
+.LEAVE
+ |----|
+>| 92 |
+ |----|
+ 
+ Sets SP to BP, pops BP
+ 
+ ..., bp_h, bp_l, ... ->
+ ...
  
  ----------------
 .READ

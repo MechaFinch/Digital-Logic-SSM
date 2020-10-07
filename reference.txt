@@ -29,7 +29,7 @@ This file is generated from the ISA.
  ...
 
 05 POP unsigned byte
- ..., value1, value2, ... valuen ->
+ ..., <n bytes> ->
  ...
 
 06 DUP
@@ -45,8 +45,8 @@ This file is generated from the ISA.
  ..., value, byte1, byte2, value
 
 09 DUPON unsigned byte
- ..., value, byte1, byte2, ... byten ->
- ..., value, byte1, byte2, ... byten, value
+ ..., value, <n bytes> ->
+ ..., value, <n bytes>, value
 
 0A DUP2
  ..., value_h, value_l ->
@@ -65,12 +65,12 @@ This file is generated from the ISA.
  ..., value_h, value_l, byte1, byte2, value_h, value_l
 
 0E DUP2ON unsigned byte
- ..., value_h, value_l, byte1, byte2, ... byten ->
- ..., value_h, value_l, byte1, byte2, ... byten, value_h, value_l
+ ..., value_h, value_l, <n bytes> ->
+ ..., value_h, value_l, <n bytes>, value_l
 
 0F DUP2ONPB unsigned byte
- ..., value_h, value_l, byte1, byte2, ... byten ->
- ..., value_h, value_l, byte1, byte2, ... byten, value_h, value_l
+ ..., value_h, value_l, <n bytes> ->
+ ..., value_h, value_l, <n bytes>, value_h, value_l
 
 10 SWAP
  ..., value1, value2 ->
@@ -96,51 +96,109 @@ This file is generated from the ISA.
  ..., offset ->
  ..., value
 
-24 BPLOAD
+24 WALOAD
+ ..., offset_h, offset_l ->
+ ..., value
+
+25 WALOAD word OR label
+ ..., offset_h, offset_l ->
+ ..., value
+
+26 BPLOAD
  ... ->
  ..., value
 
-25 BPALOAD
+27 BPALOAD
  ..., offset ->
  ..., value
 
-28 STORE word OR label
+28 BPWALOAD
+ ..., offset_h, offset_l ->
+ ..., value
+
+29 STORE word OR label
  ..., value ->
  ...
 
-29 STOREPB word OR label
+2A STOREPB word OR label
  ..., value ->
  ...
 
-2A PSTORE
+2B PSTORE
  ..., pointer_h, pointer_l, value ->
  ...
 
-2B PSTOREPB
+2C PSTOREPB
  ..., pointer_h, pointer_l, value ->
  ...
 
-2C ASTORE
+2D ASTORE
  ..., pointer_h, pointer_l, offset, value ->
  ...
 
-2D ASTOREPB
+2E ASTOREPB
  ..., pointer_h, pointer_l, offset, value ->
  ...
 
-2E ASTORE word OR label
+2F ASTORE word OR label
  ..., offset, value ->
  ...
 
-2F ASTOREPB word OR label
+30 ASTOREPB word OR label
  ..., offset, value ->
  ...
 
- BPSTORE
+31 WASTORE
+ ..., pointer_h, pointer_l, offset_h, offset_l, value ->
+ ...
 
- BPASTORE
+32 WASTOREPB
+ ..., pointer_h, pointer_l, offset_h, offset_l, value ->
+ ...
 
- BPASTOREPB
+33 WASTORE word OR label
+ ..., offset_h, offset_l, value ->
+ ...
+
+34 WASTOREPB word OR label
+ ..., offset_h, offset_l, value ->
+ ...
+
+35 BPSTORE
+ ..., value ->
+ ...
+
+36 BPASTORE
+ ..., offset, value ->
+ ...
+
+37 BPASTOREPB
+ ..., offset, value ->
+ ...
+
+38 BPASTORE byte
+ ..., value ->
+ ...
+
+39 BPASTOREPB byte
+ ..., value ->
+ ...
+
+3A BPWASTORE
+ ..., offset_h, offset_l, value ->
+ ...
+
+3B BPWASTOREPB
+ ..., offset_h, offset_l, value ->
+ ...
+
+3C BPWASTORE word
+ ..., value ->
+ ...
+
+3D BPWASTOREPB word
+ ..., value ->
+ ...
 
  PUSHBP
 
@@ -197,50 +255,70 @@ This file is generated from the ISA.
  ...
 
 81 JMPS byte OR short offset label
+ No change
 
- JMPSC
+82 JMPSC
+ ..., disp ->
+ ...
 
- JMPSC byte OR short offset label
+83 JMPSC byte OR short offset label
+ No change
 
- JMPSN
+84 JMPSN
+ ..., disp ->
+ ...
 
- JMPSN byte OR short offset label
+85 JMPSN byte OR short offset label
+ No change
 
- JMPL
+86 JMPL
+ ..., addr_h, addr_l ->
+ ...
 
- JMPL word OR label
+87 JMPL word OR label
+ No change
 
- JMPLC
+88 JMPLC
+ ..., addr_h, addr_l ->
+ ...
 
- JMPLC word OR label
+89 JMPLC word OR label
+ No change
 
- JMPLN
+8A JMPLN
+ ..., addr_h, addr_l ->
+ ...
 
- JMPLN word OR label
+8B JMPLN word OR label
+ No change
 
- CALL
+8C CALL
+ ..., addr_h, addr_l ->
+ ..., ip_h, ip_l
 
- CALL word OR label
+8D CALL word OR label
+ ... ->
+ ..., ip_h, ip_l
 
- CALLV
+8E RET
+ ..., ip_h, ip_l ->
+ ...
 
- CALLV word, byte OR label, byte
+8F RET unsigned byte
+ ..., <n bytes>, ip_h, ip_l ->
+ ...
 
- CALLPB
+90 ENTER byte
+ ... ->
+ ..., bp_h, bp_l, <value bytes of uninitialized data>
 
- CALLPB word OR label
+91 ENTER word
+ ... ->
+ ..., bp_h, bp_l, <value bytes of uninitialized data>
 
- CALLVPB
-
- CALLVPB word, unsigned byte OR label, unsigned byte
-
- RET
-
- RET unsigned byte
-
- RETPB
-
- RETPB unsigned byte
+92 LEAVE
+ ..., bp_h, bp_l, ... ->
+ ...
 
 FE READ
  ... ->
