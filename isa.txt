@@ -382,7 +382,7 @@
 >| 20 | word |
  |----|------|
  
- Pushes the value at the specified memory address
+ Pushes the byte at the specified memory address
  
  ... ->
  ..., value
@@ -401,14 +401,25 @@
  
  next inst
 ~0000 0000 0000 0011 0000 0000 0000 0011
+ 
+ ----------------
+.LOADW word OR label
+ |----|------|
+>| 21 | word |
+ |----|------|
+ 
+ Pushes the word at the specified memory address
+ 
+ ... ->
+ ..., value_h, value_l
 
  ----------------
 .PLOAD
  |----|
->| 21 |
+>| 22 |
  |----|
  
- Pushes the value at [pointer]
+ Pushes the byte at [pointer]
  
  ..., pointer_h, pointer_l ->
  ..., value
@@ -429,12 +440,23 @@
 ~0000 0000 0000 0011 0000 0000 0000 0011
  
  ----------------
-.ALOAD
+.PLOADW
  |----|
->| 22 |
+>| 23 |
  |----|
  
- Pushes the value at [pointer + offset]
+ Pushes the word at [pointer]
+ 
+ ..., pointer_h, pointer_l ->
+ ..., value_h, value_l
+ 
+ ----------------
+.ALOAD
+ |----|
+>| 24 |
+ |----|
+ 
+ Pushes the byte at [pointer + offset]
  
  ..., pointer_h, pointer_l, offset ->
  ..., value
@@ -473,12 +495,23 @@
 ~0000 0000 0000 0011 0000 0000 0000 0011
  
  ----------------
+.ALOADW
+ |----|
+>| 25 |
+ |----|
+ 
+ Pushes the word at [pointer + offset]
+ 
+ ..., pointer_h, pointer_l, offset ->
+ ..., value_h, value_l
+ 
+ ----------------
 .ALOAD word OR label
  |----|------|
->| 23 | word |
+>| 26 | word |
  |----|------|
  
- Pushes the value at [pointer + offset]
+ Pushes the byte at [pointer + offset]
  
  ..., offset ->
  ..., value
@@ -515,69 +548,135 @@
  
  next inst
 ~0000 0000 0000 0011 0000 0000 0000 0011
+ 
+ ----------------
+.ALOADW word OR label
+ |----|------|
+>| 27 | word |
+ |----|------|
+ 
+ Pushes the word at [pointer + offset]
+ 
+ ..., offset ->
+ ..., value_h, value_l
 
  ----------------
 .WALOAD
- |----|------|
->| 24 | word |
- |----|------|
+ |----|
+>| 28 |
+ |----|
  
- Pushes the value at [pointer + offset]
+ Pushes the byte at [pointer + offset]
  
- ..., offset_h, offset_l ->
+ ..., pointer_h, pointer_l, offset_h, offset_l ->
  ..., value
+ 
+ ----------------
+.WALOADW
+ |----|
+>| 29 |
+ |----|
+ 
+ Pushes the word at [pointer + offset]
+ 
+ ..., pointer_h, pointer_l, offset_h, offset_l ->
+ ..., value_h, value_l
  
  ----------------
 .WALOAD word OR label
  |----|------|
->| 25 | word |
+>| 2A | word |
  |----|------|
  
- Pushes the value at [pointer + offset]
+ Pushes the byte at [pointer + offset]
  
  ..., offset_h, offset_l ->
  ..., value
  
  ----------------
+.WALOADW word OR label
+ |----|------|
+>| 2B | word |
+ |----|------|
+ 
+ Pushes the word at [pointer + offset]
+ 
+ ..., offset_h, offset_l ->
+ ..., value_h, value_l
+ 
+ ----------------
 .BPLOAD
  |----|
->| 26 |
+>| 2C |
  |----|
  
- Pushes the value at [base pointer]
+ Pushes the byte at [base pointer]
  
  ... ->
  ..., value
  
  ----------------
-.BPALOAD
+.BPLOADW
  |----|
->| 27 |
+>| 2D |
  |----|
  
- Pushes the value at [base pointer + offset]
+ Pushes the word at [base pointer]
+ 
+ ... ->
+ ..., value_h, value_l
+ 
+ ----------------
+.BPALOAD
+ |----|
+>| 2E |
+ |----|
+ 
+ Pushes the byte at [base pointer + offset]
  
  ..., offset ->
  ..., value
  
  ----------------
-.BPWALOAD
+.BPALOADW
  |----|
->| 28 |
+>| 2F |
  |----|
  
- Pushes the value at [base pointer + offset]
+ Pushes the word at [base pointer + offset]
+ 
+ ..., offset ->
+ ..., value_h, value_l
+ 
+ ----------------
+.BPWALOAD
+ |----|
+>| 30 |
+ |----|
+ 
+ Pushes the byte at [base pointer + offset]
  
  ..., offset_h, offset_l ->
  ..., value
  
  ----------------
+.BPWALOADW
+ |----|
+>| 31 |
+ |----|
+ 
+ Pushes the word at [base pointer + offset]
+ 
+ ..., offset_h, offset_l ->
+ ..., value_h, value_l
+ 
+ ----------------
 .STORE word OR label
  |----|------|
->| 29 | word |
+>| 32 | word |
  |----|------|
  
- Stores the value to the specified memory address
+ Stores the byte to the specified memory address
  Sets the base pointer to the specified memory address, use STOREPB to avoid this
  
  ..., value ->
@@ -604,10 +703,10 @@
  ----------------
 .STOREPB word OR label
  |----|------|
->| 2A | word |
+>| 33 | word |
  |----|------|
  
- Stores the value to the specified memory address while preserving the base pointer
+ Stores the byte to the specified memory address while preserving the base pointer
  
  ..., value ->
  ...
@@ -652,12 +751,35 @@
 ~0000 0000 0000 0011 0000 0000 0000 0011
  
  ----------------
+.STOREW word OR label
+ |----|------|
+>| 34 | word |
+ |----|------|
+ 
+ Stores the word to the specified memory address
+ Sets the base pointer to the specified memory address, use STOREWPB to avoid this
+ 
+ ..., value_h, value_l ->
+ ...
+ 
+ ----------------
+.STOREWPB word OR label
+ |----|------|
+>| 35 | word |
+ |----|------|
+ 
+ Stores the word to the specified memory address while preserving the base pointer
+ 
+ ..., value_h, value_l ->
+ ...
+ 
+ ----------------
 .PSTORE
  |----|
->| 2B |
+>| 36 |
  |----|
  
- Stores the value to [pointer]
+ Stores the byte to [pointer]
  Sets the base pointer to the pointer, use PSTOREPB to avoid this
  
  ..., pointer_h, pointer_l, value ->
@@ -666,21 +788,44 @@
  ----------------
 .PSTOREPB
  |----|
->| 2C |
+>| 37 |
  |----|
  
- Stores the value to [pointer] while preserving the base pointer
+ Stores the byte to [pointer] while preserving the base pointer
  
  ..., pointer_h, pointer_l, value ->
  ...
  
  ----------------
-.ASTORE
+.PSTOREW
  |----|
->| 2D |
+>| 38 |
  |----|
  
- Stores the value to [pointer + offset]
+ Stores the word to [pointer]
+ Sets the base pointer to the pointer, use PSTOREWPB to avoid this
+ 
+ ..., pointer_h, pointer_l, value_h, value_l ->
+ ...
+ 
+ ----------------
+.PSTOREWPB
+ |----|
+>| 39 |
+ |----|
+ 
+ Stores the word to [pointer] while preserving the base pointer
+ 
+ ..., pointer_h, pointer_l, value_h, value_l ->
+ ...
+ 
+ ----------------
+.ASTORE
+ |----|
+>| 3A |
+ |----|
+ 
+ Stores the byte to [pointer + offset]
  Sets the base pointer to the effective address, use ASTOREPB to avoid this
  
  ..., pointer_h, pointer_l, offset, value ->
@@ -689,21 +834,44 @@
  ----------------
 .ASTOREPB
  |----|
->| 2E |
+>| 3B |
  |----|
  
- Stores the value to [pointer + offset] while preserving the base pointer
+ Stores the byte to [pointer + offset] while preserving the base pointer
  
  ..., pointer_h, pointer_l, offset, value ->
  ...
  
  ----------------
+.ASTOREW
+ |----|
+>| 3C |
+ |----|
+ 
+ Stores the word to [pointer + offset]
+ Sets the base pointer to the effective address, use ASTOREPB to avoid this
+ 
+ ..., pointer_h, pointer_l, offset, value_h, value_l ->
+ ...
+ 
+ ----------------
+.ASTOREWPB
+ |----|
+>| 3D |
+ |----|
+ 
+ Stores the word to [pointer + offset] while preserving the base pointer
+ 
+ ..., pointer_h, pointer_l, offset, value_h, value_l ->
+ ...
+ 
+ ----------------
 .ASTORE word OR label
  |----|------|
->| 2F | word |
+>| 3E | word |
  |----|------|
  
- Stores the value to [pointer + offset]
+ Stores the byte to [pointer + offset]
  Sets the base pointer to the effective address, use ASTOREPB to avoid this
  
  ..., offset, value ->
@@ -712,21 +880,44 @@
  ----------------
 .ASTOREPB word OR label
  |----|------|
->| 30 | word |
+>| 3F | word |
  |----|------|
  
- Stores the value to [pointer + offset] while preserving the base pointer
+ Stores the byte to [pointer + offset] while preserving the base pointer
  
  ..., offset, value ->
  ...
  
  ----------------
+.ASTOREW word OR label
+ |----|------|
+>| 40 | word |
+ |----|------|
+ 
+ Stores the word to [pointer + offset]
+ Sets the base pointer to the effective address, use ASTOREWPB to avoid this
+ 
+ ..., offset, value_h, value_l ->
+ ...
+ 
+ ----------------
+.ASTOREWPB word OR label
+ |----|------|
+>| 41 | word |
+ |----|------|
+ 
+ Stores the word to [pointer + offset] while preserving the base pointer
+ 
+ ..., offset, value_h, value_l ->
+ ...
+ 
+ ----------------
 .WASTORE
  |----|
->| 31 |
+>| 42 |
  |----|
  
- Stores the value to [pointer + offset]
+ Stores the byte to [pointer + offset]
  Sets the base pointer to the effective address, use WASTOREPB to avoid this
  
  ..., pointer_h, pointer_l, offset_h, offset_l, value ->
@@ -735,21 +926,44 @@
  ----------------
 .WASTOREPB
  |----|
->| 32 |
+>| 43 |
  |----|
  
- Stores the value to [pointer + offset] while preserving the base pointer
+ Stores the byte to [pointer + offset] while preserving the base pointer
  
  ..., pointer_h, pointer_l, offset_h, offset_l, value ->
  ...
  
  ----------------
+.WASTOREW
+ |----|
+>| 44 |
+ |----|
+ 
+ Stores the word to [pointer + offset]
+ Sets the base pointer to the effective address, use WASTOREWPB to avoid this
+ 
+ ..., pointer_h, pointer_l, offset_h, offset_l, value_h, value_l ->
+ ...
+ 
+ ----------------
+.WASTOREWPB
+ |----|
+>| 45 |
+ |----|
+ 
+ Stores the word to [pointer + offset] while preserving the base pointer
+ 
+ ..., pointer_h, pointer_l, offset_h, offset_l, value_h, value_l ->
+ ...
+ 
+ ----------------
 .WASTORE word OR label
  |----|------|
->| 33 | word |
+>| 46 | word |
  |----|------|
  
- Stores the value to [pointer + offset]
+ Stores the byte to [pointer + offset]
  Sets the base pointer to the effective address, use WASTOREPB to avoid this
  
  ..., offset_h, offset_l, value ->
@@ -758,32 +972,66 @@
  ----------------
 .WASTOREPB word OR label
  |----|------|
->| 34 | word |
+>| 47 | word |
  |----|------|
  
- Stores the value to [pointer + offset] while preserving the base pointer
+ Stores the byte to [pointer + offset] while preserving the base pointer
  
  ..., offset_h, offset_l, value ->
  ...
  
  ----------------
+.WASTOREW word OR label
+ |----|------|
+>| 48 | word |
+ |----|------|
+ 
+ Stores the word to [pointer + offset]
+ Sets the base pointer to the effective address, use WASTOREWPB to avoid this
+ 
+ ..., offset_h, offset_l, value_h, value_l ->
+ ...
+ 
+ ----------------
+.WASTOREWPB word OR label
+ |----|------|
+>| 49 | word |
+ |----|------|
+ 
+ Stores the word to [pointer + offset] while preserving the base pointer
+ 
+ ..., offset_h, offset_l, value_h, value_l ->
+ ...
+ 
+ ----------------
 .BPSTORE
  |----|
->| 35 |
+>| 4A |
  |----|
  
- Stores the value to [base pointer]
+ Stores the byte to [base pointer]
  
  ..., value ->
  ...
  
  ----------------
-.BPASTORE
+.BPSTOREW
  |----|
->| 36 |
+>| 4B |
  |----|
  
- Stores the value to [base pointer + offset]
+ Stores the word to [base pointer]
+ 
+ ..., value_h, value_l ->
+ ...
+ 
+ ----------------
+.BPASTORE
+ |----|
+>| 4C |
+ |----|
+ 
+ Stores the byte to [base pointer + offset]
  Sets the base pointer to the effective address, use BPASTOREPB to avoid this
  
  ..., offset, value ->
@@ -792,21 +1040,44 @@
  ----------------
 .BPASTOREPB
  |----|
->| 37 |
+>| 4D |
  |----|
  
- Stores the value to [base pointer + offset] while preserving the base pointer
+ Stores the byte to [base pointer + offset] while preserving the base pointer
  
  ..., offset, value ->
  ...
  
  ----------------
+.BPASTOREW
+ |----|
+>| 4E |
+ |----|
+ 
+ Stores the word to [base pointer + offset]
+ Sets the base pointer to the effective address, use BPASTOREPB to avoid this
+ 
+ ..., offset, value_h, value_l ->
+ ...
+ 
+ ----------------
+.BPASTOREWPB
+ |----|
+>| 4F |
+ |----|
+ 
+ Stores the word to [base pointer + offset] while preserving the base pointer
+ 
+ ..., offset, value_h, value_l ->
+ ...
+ 
+ ----------------
 .BPASTORE byte
  |----|------|
->| 38 | byte |
+>| 50 | byte |
  |----|------|
  
- Stores the value to [base pointer + offset]
+ Stores the byte to [base pointer + offset]
  Sets the base pointer to the effective address, use BPASTOREPB to avoid this
  
  ..., value ->
@@ -815,21 +1086,44 @@
  ----------------
 .BPASTOREPB byte
  |----|------|
->| 39 | byte |
+>| 51 | byte |
  |----|------|
  
- Stores the value to [base pointer + offset] while preserving the base pointer
+ Stores the byte to [base pointer + offset] while preserving the base pointer
  
  ..., value ->
  ...
  
  ----------------
+.BPASTOREW byte
+ |----|------|
+>| 52 | byte |
+ |----|------|
+ 
+ Stores the word to [base pointer + offset]
+ Sets the base pointer to the effective address, use BPASTOREPB to avoid this
+ 
+ ..., value_h, value_l ->
+ ...
+ 
+ ----------------
+.BPASTOREWPB byte
+ |----|------|
+>| 53 | byte |
+ |----|------|
+ 
+ Stores the word to [base pointer + offset] while preserving the base pointer
+ 
+ ..., value_h, value_l ->
+ ...
+ 
+ ----------------
 .BPWASTORE
  |----|
->| 3A |
+>| 54 |
  |----|
  
- Stores the value to [base pointer + offset]
+ Stores the byte to [base pointer + offset]
  Sets the base pointer to the effective address, use PBWASTOREPB to avoid this
  
  ..., offset_h, offset_l, value ->
@@ -838,21 +1132,44 @@
  ----------------
 .BPWASTOREPB
  |----|
->| 3B |
+>| 55 |
  |----|
  
- Stores the value to [base pointer + offset] while preserving the base pointer
+ Stores the byte to [base pointer + offset] while preserving the base pointer
  
  ..., offset_h, offset_l, value ->
  ...
  
  ----------------
-.BPWASTORE word
+.BPWASTOREW
  |----|
->| 3C |
+>| 56 |
  |----|
  
- Stores the value to [base pointer + offset]
+ Stores the word to [base pointer + offset]
+ Sets the base pointer to the effective address, use PBWASTOREPB to avoid this
+ 
+ ..., offset_h, offset_l, value_h, value_l ->
+ ...
+ 
+ ----------------
+.BPWASTOREWPB
+ |----|
+>| 57 |
+ |----|
+ 
+ Stores the word to [base pointer + offset] while preserving the base pointer
+ 
+ ..., offset_h, offset_l, value_h, value_l ->
+ ...
+ 
+ ----------------
+.BPWASTORE word
+ |----|------|
+>| 58 | word |
+ |----|------|
+ 
+ Stores the byte to [base pointer + offset]
  Sets the base pointer to the effective address, use BPWASTOREPB to avoid this
  
  ..., value ->
@@ -860,14 +1177,38 @@
  
  ----------------
 .BPWASTOREPB word
- |----|
->| 3D |
- |----|
+ |----|------|
+>| 59 | word |
+ |----|------|
  
- Stores the value to [base pointer + offset] while preserving the base pointer
- Ah long mnemonics: Base Pointer Word-Index Array Store, Preserve Base
+ Stores the byte to [base pointer + offset] while preserving the base pointer
  
  ..., value ->
+ ...
+ 
+ ----------------
+.BPWASTOREW word
+ |----|------|
+>| 5A | word |
+ |----|------|
+ 
+ Stores the word to [base pointer + offset]
+ Sets the base pointer to the effective address, use BPWASTOREPB to avoid this
+ 
+ ..., value_h, value_l ->
+ ...
+ 
+ ----------------
+.BPWASTOREWPB word
+ |----|------|
+>| 5B | word |
+ |----|------|
+ 
+ Stores the word to [base pointer + offset] while preserving the base pointer
+ This opcode has the longest mnemonic, which stands for:
+ Base Pointer Word-indexed Array Store, Word, Preserve Base
+ 
+ ..., value_h, value_l ->
  ...
  
  ----------------
@@ -875,21 +1216,24 @@
  
  ----------------
 .POPBP
+
+ ----------------
+.SWAPBP
  
  ----------------
 .SETBP
+ 
+ ----------------
+.INCBP
+ 
+ ----------------
+.DECBP
  
  ----------------
 .PUSHS
  
  ----------------
 .POPS
- 
- ---------------- <- put these with standard inc/dec when we get to those
-.INCBP
- 
- ----------------
-.DECBP
  
  ----------------
 .CEZ

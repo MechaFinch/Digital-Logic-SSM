@@ -60,7 +60,9 @@ public class ISAReferenceGenerator {
 			"<opcode> MNEMONIC arguments\r\n" + 
 			"<STACK EFFECTS>\r\n" + 
 			"\r\n" + 
-			"This file is generated from the ISA.\r\n\r\n";
+			"This file is generated from the ISA.\r\n" +
+			"\r\n" +
+			"Total Opcodes: ";
 	
 	/**
 	 * Condenses the ISA into a reference
@@ -73,15 +75,14 @@ public class ISAReferenceGenerator {
 		BufferedReader in = new BufferedReader(new FileReader(ipf));
 		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(opf)));
 		
-		// Print header
-		out.println(header);
-		
 		// Condense
 		String line = "",
 			   mnemonic = "",
 			   opcode = "",
 			   stackBefore = "",
-			   stackAfter = "";
+			   stackAfter = "",
+			   output = "";
+		int opcodeCount = 0;
 		
 		while((line = in.readLine()) != null) {
 			// Control characters only
@@ -109,18 +110,24 @@ public class ISAReferenceGenerator {
 				}
 			} else if((line.startsWith("~") || line.trim().startsWith("-")) && !mnemonic.equals("")) {
 				// End of the relevant information for the instruction, write it
-				out.println(opcode + " " + mnemonic);
-				if(!stackBefore.equals("")) out.println(" " + stackBefore);
-				if(!stackAfter.equals("")) out.println(" " + stackAfter);
-				out.println();
+				output += opcode + " " + mnemonic + "\r\n";
+				if(!stackBefore.equals("")) output += " " + stackBefore + "\r\n";
+				if(!stackAfter.equals("")) output += " " + stackAfter + "\r\n";
+				output += "\r\n";
 				
 				// Clear values cause we don't have them anymore
 				opcode = "";
 				mnemonic = "";
 				stackBefore = "";
 				stackAfter = "";
+				
+				opcodeCount++;
 			}
 		}
+		
+		// Print header and file
+		out.println(header + opcodeCount + "\r\n\r\n");
+		out.println(output);
 		
 		in.close();
 		out.flush();

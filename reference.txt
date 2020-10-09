@@ -8,6 +8,8 @@ in a compact form. Since the main ISA includes all possible information
 
 This file is generated from the ISA.
 
+Total Opcodes: 125
+
 
 00 NOP
  No change
@@ -84,135 +86,257 @@ This file is generated from the ISA.
  ... ->
  ..., value
 
-21 PLOAD
+21 LOADW word OR label
+ ... ->
+ ..., value_h, value_l
+
+22 PLOAD
  ..., pointer_h, pointer_l ->
  ..., value
 
-22 ALOAD
+23 PLOADW
+ ..., pointer_h, pointer_l ->
+ ..., value_h, value_l
+
+24 ALOAD
  ..., pointer_h, pointer_l, offset ->
  ..., value
 
-23 ALOAD word OR label
+25 ALOADW
+ ..., pointer_h, pointer_l, offset ->
+ ..., value_h, value_l
+
+26 ALOAD word OR label
  ..., offset ->
  ..., value
 
-24 WALOAD
+27 ALOADW word OR label
+ ..., offset ->
+ ..., value_h, value_l
+
+28 WALOAD
+ ..., pointer_h, pointer_l, offset_h, offset_l ->
+ ..., value
+
+29 WALOADW
+ ..., pointer_h, pointer_l, offset_h, offset_l ->
+ ..., value_h, value_l
+
+2A WALOAD word OR label
  ..., offset_h, offset_l ->
  ..., value
 
-25 WALOAD word OR label
+2B WALOADW word OR label
  ..., offset_h, offset_l ->
- ..., value
+ ..., value_h, value_l
 
-26 BPLOAD
+2C BPLOAD
  ... ->
  ..., value
 
-27 BPALOAD
+2D BPLOADW
+ ... ->
+ ..., value_h, value_l
+
+2E BPALOAD
  ..., offset ->
  ..., value
 
-28 BPWALOAD
+2F BPALOADW
+ ..., offset ->
+ ..., value_h, value_l
+
+30 BPWALOAD
  ..., offset_h, offset_l ->
  ..., value
 
-29 STORE word OR label
+31 BPWALOADW
+ ..., offset_h, offset_l ->
+ ..., value_h, value_l
+
+32 STORE word OR label
  ..., value ->
  ...
 
-2A STOREPB word OR label
+33 STOREPB word OR label
  ..., value ->
  ...
 
-2B PSTORE
+34 STOREW word OR label
+ ..., value_h, value_l ->
+ ...
+
+35 STOREWPB word OR label
+ ..., value_h, value_l ->
+ ...
+
+36 PSTORE
  ..., pointer_h, pointer_l, value ->
  ...
 
-2C PSTOREPB
+37 PSTOREPB
  ..., pointer_h, pointer_l, value ->
  ...
 
-2D ASTORE
+38 PSTOREW
+ ..., pointer_h, pointer_l, value_h, value_l ->
+ ...
+
+39 PSTOREWPB
+ ..., pointer_h, pointer_l, value_h, value_l ->
+ ...
+
+3A ASTORE
  ..., pointer_h, pointer_l, offset, value ->
  ...
 
-2E ASTOREPB
+3B ASTOREPB
  ..., pointer_h, pointer_l, offset, value ->
  ...
 
-2F ASTORE word OR label
+3C ASTOREW
+ ..., pointer_h, pointer_l, offset, value_h, value_l ->
+ ...
+
+3D ASTOREWPB
+ ..., pointer_h, pointer_l, offset, value_h, value_l ->
+ ...
+
+3E ASTORE word OR label
  ..., offset, value ->
  ...
 
-30 ASTOREPB word OR label
+3F ASTOREPB word OR label
  ..., offset, value ->
  ...
 
-31 WASTORE
+40 ASTOREW word OR label
+ ..., offset, value_h, value_l ->
+ ...
+
+41 ASTOREWPB word OR label
+ ..., offset, value_h, value_l ->
+ ...
+
+42 WASTORE
  ..., pointer_h, pointer_l, offset_h, offset_l, value ->
  ...
 
-32 WASTOREPB
+43 WASTOREPB
  ..., pointer_h, pointer_l, offset_h, offset_l, value ->
  ...
 
-33 WASTORE word OR label
+44 WASTOREW
+ ..., pointer_h, pointer_l, offset_h, offset_l, value_h, value_l ->
+ ...
+
+45 WASTOREWPB
+ ..., pointer_h, pointer_l, offset_h, offset_l, value_h, value_l ->
+ ...
+
+46 WASTORE word OR label
  ..., offset_h, offset_l, value ->
  ...
 
-34 WASTOREPB word OR label
+47 WASTOREPB word OR label
  ..., offset_h, offset_l, value ->
  ...
 
-35 BPSTORE
+48 WASTOREW word OR label
+ ..., offset_h, offset_l, value_h, value_l ->
+ ...
+
+49 WASTOREWPB word OR label
+ ..., offset_h, offset_l, value_h, value_l ->
+ ...
+
+4A BPSTORE
  ..., value ->
  ...
 
-36 BPASTORE
+4B BPSTOREW
+ ..., value_h, value_l ->
+ ...
+
+4C BPASTORE
  ..., offset, value ->
  ...
 
-37 BPASTOREPB
+4D BPASTOREPB
  ..., offset, value ->
  ...
 
-38 BPASTORE byte
+4E BPASTOREW
+ ..., offset, value_h, value_l ->
+ ...
+
+4F BPASTOREWPB
+ ..., offset, value_h, value_l ->
+ ...
+
+50 BPASTORE byte
  ..., value ->
  ...
 
-39 BPASTOREPB byte
+51 BPASTOREPB byte
  ..., value ->
  ...
 
-3A BPWASTORE
+52 BPASTOREW byte
+ ..., value_h, value_l ->
+ ...
+
+53 BPASTOREWPB byte
+ ..., value_h, value_l ->
+ ...
+
+54 BPWASTORE
  ..., offset_h, offset_l, value ->
  ...
 
-3B BPWASTOREPB
+55 BPWASTOREPB
  ..., offset_h, offset_l, value ->
  ...
 
-3C BPWASTORE word
+56 BPWASTOREW
+ ..., offset_h, offset_l, value_h, value_l ->
+ ...
+
+57 BPWASTOREWPB
+ ..., offset_h, offset_l, value_h, value_l ->
+ ...
+
+58 BPWASTORE word
  ..., value ->
  ...
 
-3D BPWASTOREPB word
+59 BPWASTOREPB word
  ..., value ->
+ ...
+
+5A BPWASTOREW word
+ ..., value_h, value_l ->
+ ...
+
+5B BPWASTOREWPB word
+ ..., value_h, value_l ->
  ...
 
  PUSHBP
 
  POPBP
 
+ SWAPBP
+
  SETBP
-
- PUSHS
-
- POPS
 
  INCBP
 
  DECBP
+
+ PUSHS
+
+ POPS
 
  CEZ
 
@@ -327,4 +451,5 @@ FE READ
 FF WRITE
  ..., value ->
  ...
+
 
