@@ -8,7 +8,7 @@ in a compact form. Since the main ISA includes all possible information
 
 This file is generated from the ISA.
 
-Total Opcodes: 125
+Total Opcodes: 139
 
 
 00 NOP
@@ -322,57 +322,162 @@ Total Opcodes: 125
  ..., value_h, value_l ->
  ...
 
+5C LEA
+ ..., offset ->
+ ..., addr_h, addr_l
+
+5D LEA byte
+ ... ->
+ ..., addr_h, addr_l
+
+5E WLEA
+ ..., offset_h, offset_l ->
+ ..., addr_h, addr_l
+
+5F WLEA word
+ ... ->
+ ..., addr_h, addr_l
+
  PUSHBP
+ ... ->
+ ..., bp_h, bp_l
 
  POPBP
+ ..., bp_h, bp_l ->
+ ...
 
  SWAPBP
+ ..., value_h, value_l ->
+ ..., bp_h, bp_l
 
- SETBP
+ SETBP word
+ No change
 
  INCBP
+ No change
 
  DECBP
+ No change
 
  PUSHS
+ ... ->
+ ..., value
+
+ PUSHSW
+ ... ->
+ ..., value_h, value_l
 
  POPS
+ ..., value ->
+ ...
 
- CEZ
+ POPSW
+ ..., value_h, value_l ->
+ ...
 
- CNZ
+ MOVS
+ ..., pointer_h, pointer_l ->
+ ..., pointer+1_h, pointer+1_l
 
- CGZ
-
- CGEZ
-
- CLZ
-
- CLEZ
+ MOVSW
+ ..., pointer_h, pointer_l ->
+ ..., pointer+2_h, pointer+2_l
 
  CE
-
- CNE
-
- CG
-
- CGE
-
- CL
-
- CLE
+ ..., valuea, valueb ->
+ ...
 
  CEI byte
+ ..., valuea ->
+ ...
+
+ CEW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+
+ CEWI word
+ ..., valuea_h, valuea_l ->
+ ...
+
+ CNE
+ ..., valuea, valueb ->
+ ...
 
  CNEI byte
+ ..., valuea ->
+ ...
+
+ CNEW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+
+ CNEWI word
+ ..., valuea_h, valuea_l ->
+ ...
+
+ CG
+ ..., valuea, valueb ->
+ ...
 
  CGI byte
+ ..., valuea ->
+ ...
+
+ CGW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+
+ CGWI word
+ ..., valuea_h, valuea_l ->
+ ...
+
+ CGE
+ ..., valuea, valueb ->
+ ...
 
  CGEI byte
+ ..., valuea ->
+ ...
+
+ CGEW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+
+ CGEWI word
+ ..., valuea_h, valuea_l ->
+ ...
+
+ CL
+ ..., valuea, valueb ->
+ ...
 
  CLI byte
+ ..., valuea ->
+ ...
+
+ CLW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+
+ CLWI word
+ ..., valuea_h, valuea_l ->
+ ...
+
+ CLE
+ ..., valuea, valueb ->
+ ...
 
  CLEI byte
+ ..., valuea ->
+ ...
+
+ CLEW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+
+ CLEWI word
+ ..., valuea_h, valuea_l ->
+ ...
 
 80 JMPS
  ..., disp ->

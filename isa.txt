@@ -1212,82 +1212,337 @@
  ...
  
  ----------------
+.LEA
+ |----|
+>| 5C |
+ |----|
+ 
+ Pushes the effective address of [base pointer + offset]
+ Has alias BPADD
+ 
+ ..., offset ->
+ ..., addr_h, addr_l
+ 
+ ----------------
+.LEA byte
+ |----|------|
+>| 5D | byte |
+ |----|------|
+ 
+ Pushes the effective address of [base pointer + offset]
+ Has alias BPADD
+ 
+ ... ->
+ ..., addr_h, addr_l
+ 
+ ----------------
+.WLEA
+ |----|
+>| 5E |
+ |----|
+ 
+ Pushes the effective address of [base pointer + offset]
+ Has alias BPADDW
+ 
+ ..., offset_h, offset_l ->
+ ..., addr_h, addr_l
+ 
+ ----------------
+.WLEA word
+ |----|------|
+>| 5F | word |
+ |----|------|
+ 
+ Pushes the effective address of [base pointer + offset]
+ Has alias BPADDW
+ 
+ ... ->
+ ..., addr_h, addr_l
+ 
+ ----------------
 .PUSHBP
+ 
+ Pushes the base pointer
+ 
+ ... ->
+ ..., bp_h, bp_l
  
  ----------------
 .POPBP
+ 
+ Pops the base pointer
+ 
+ ..., bp_h, bp_l ->
+ ...
 
  ----------------
 .SWAPBP
  
+ Swaps the base pointer with the top of the stack
+ 
+ ..., value_h, value_l ->
+ ..., bp_h, bp_l
+ 
  ----------------
-.SETBP
+.SETBP word
+ 
+ Sets the base pointer to the value
+ 
+ No change
  
  ----------------
 .INCBP
  
+ Increments the base pointer
+ 
+ No change
+ 
  ----------------
 .DECBP
+ 
+ Decrements the base pointer
+ 
+ No change
  
  ----------------
 .PUSHS
  
+ Pushes the byte at [base pointer] and increments the base pointer
+ 
+ ... ->
+ ..., value
+ 
+ ----------------
+.PUSHSW
+ 
+ Pushes the word at [base pointer] and increments the base pointer twice
+ 
+ ... ->
+ ..., value_h, value_l
+ 
  ----------------
 .POPS
  
- ----------------
-.CEZ
+ Pops the byte to [base pointer] and increments the base pointer
+ 
+ ..., value ->
+ ...
  
  ----------------
-.CNZ
+.POPSW
+ 
+ Pops the word to [base pointer] and increments the base pointer twice
+ 
+ ..., value_h, value_l ->
+ ...
  
  ----------------
-.CGZ
+.MOVS
+ 
+ Copies the byte at [base pointer] to [pointer] and increments both
+ 
+ ..., pointer_h, pointer_l ->
+ ..., pointer+1_h, pointer+1_l
  
  ----------------
-.CGEZ
+.MOVSW
  
- ----------------
-.CLZ
+ Copies the word at [base pointer] to [pointer] and increments both twice
  
- ----------------
-.CLEZ
-
+ ..., pointer_h, pointer_l ->
+ ..., pointer+2_h, pointer+2_l
+ 
  ----------------
 .CE
  
- ----------------
-.CNE
+ Sets the condition flag if a = b
  
- ----------------
-.CG
- 
- ----------------
-.CGE
- 
- ----------------
-.CL
- 
- ----------------
-.CLE
+ ..., valuea, valueb ->
+ ...
  
  ----------------
 .CEI byte
  
+ Sets the condition flag if a = b
+ 
+ ..., valuea ->
+ ...
+ 
+ ----------------
+.CEW
+ 
+ Sets the condition flag if a = b
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+ 
+ ----------------
+.CEWI word
+ 
+ Sets the condition flag if a = b
+ 
+ ..., valuea_h, valuea_l ->
+ ...
+ 
+ ----------------
+.CNE
+ 
+ Sets the condition flag if a != b
+ 
+ ..., valuea, valueb ->
+ ...
+ 
  ----------------
 .CNEI byte
+ 
+ Sets the condition flag if a != b
+ 
+ ..., valuea ->
+ ...
+ 
+ ----------------
+.CNEW
+ 
+ Sets the condition flag if a != b
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+ 
+ ----------------
+.CNEWI word
+ 
+ Sets the condition flag if a != b
+ 
+ ..., valuea_h, valuea_l ->
+ ...
+ 
+ ----------------
+.CG
+ 
+ Sets the condition flag if a > b
+ 
+ ..., valuea, valueb ->
+ ...
  
  ----------------
 .CGI byte
  
+ Sets the condition flag if a > b
+ 
+ ..., valuea ->
+ ...
+ 
+ ----------------
+.CGW
+ 
+ Sets the condition flag if a > b
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+ 
+ ----------------
+.CGWI word
+ 
+ Sets the condition flag if a > b
+ 
+ ..., valuea_h, valuea_l ->
+ ...
+ 
+ ----------------
+.CGE
+ 
+ Sets the condition flag if a >= b
+ 
+ ..., valuea, valueb ->
+ ...
+ 
  ----------------
 .CGEI byte
+ 
+ Sets the condition flag if a >= b
+ 
+ ..., valuea ->
+ ...
+ 
+ ----------------
+.CGEW
+ 
+ Sets the condition flag if a >= b
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+ 
+ ----------------
+.CGEWI word
+ 
+ Sets the condition flag if a >= b
+ 
+ ..., valuea_h, valuea_l ->
+ ...
+ 
+ ----------------
+.CL
+ 
+ Sets the condition flag if a < b
+ 
+ ..., valuea, valueb ->
+ ...
  
  ----------------
 .CLI byte
  
+ Sets the condition flag if a < b
+ 
+ ..., valuea ->
+ ...
+ 
+ ----------------
+.CLW
+ 
+ Sets the condition flag if a < b
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+ 
+ ----------------
+.CLWI word
+ 
+ Sets the condition flag if a < b
+ 
+ ..., valuea_h, valuea_l ->
+ ...
+ 
+ ----------------
+.CLE
+ 
+ Sets the condition flag if a <= b
+ 
+ ..., valuea, valueb ->
+ ...
+ 
  ----------------
 .CLEI byte
+ 
+ Sets the condition flag if a <= b
+ 
+ ..., valuea ->
+ ...
+ 
+ ----------------
+.CLEW
+ 
+ Sets the condition flag if a <= b
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+ 
+ ----------------
+.CLEWI word
+ 
+ Sets the condition flag if a <= b
+ 
+ ..., valuea_h, valuea_l ->
+ ...
  
  ----------------
 .JMPS
