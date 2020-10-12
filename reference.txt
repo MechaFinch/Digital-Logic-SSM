@@ -8,7 +8,7 @@ in a compact form. Since the main ISA includes all possible information
 
 This file is generated from the ISA.
 
-Total Opcodes: 139
+Total Opcodes: 143
 
 
 00 NOP
@@ -549,12 +549,26 @@ Total Opcodes: 139
  ..., bp_h, bp_l, ... ->
  ...
 
-FE READ
+FA READ
  ... ->
  ..., value
 
-FF WRITE
+FB READW
+ ... ->
+ ..., value_h, value_l
+
+FC WRITE
  ..., value ->
  ...
+
+FD WRITEW
+ ..., value_h, value_l ->
+ ...
+
+FE WRITEI byte
+ No change
+
+FF WRITEIW word
+ No change
 
 

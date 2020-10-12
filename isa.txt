@@ -61,7 +61,7 @@
  ... ->
  ..., value
  
- decrement sp, load constant to A
+ decrement sp, load immediate to A
 ~0000 0000 0000 0001 0010 0000 0100 0011
 
  store A at sp
@@ -81,10 +81,10 @@
  ... ->
  ..., val_h, val_l
  
- decrement sp, load constant to A
+ decrement sp, load immediate to A
 ~0000 0000 0000 0001 0010 0000 0100 0011
  
- load constant to B
+ load immediate to B
 ~0000 0000 0000 0001 0000 0000 1000 0011
 
  store B at sp & decrement sp
@@ -142,7 +142,7 @@
  load A with spl
 ~0000 0000 0000 0000 0000 0000 0101 0010
  
- load B with constant
+ load B with immediate
 ~0000 0000 0000 0001 0000 0000 1000 0011
  
  addsc, store B
@@ -387,10 +387,10 @@
  ... ->
  ..., value
  
- load constant to B
+ load immediate to B
 ~0000 0000 0000 0001 0000 0000 1000 0011
  
- load constant to A
+ load immediate to A
 ~0000 0000 0000 0001 0000 0000 0100 0011
  
  load value at AB to A, decrement sp
@@ -682,10 +682,10 @@
  ..., value ->
  ...
  
- load constant to B
+ load immediate to B
 ~0000 0000 0000 0001 0000 0000 1000 0011
  
- load constant to A
+ load immediate to A
 ~0000 0000 0000 0001 0000 0000 0100 0011
 
  put AB in bp
@@ -723,10 +723,10 @@
  store A at sp
 ~0000 0000 0000 0000 0000 0000 0010 1010
  
- load constant to B, increment sp
+ load immediate to B, increment sp
 ~0000 0000 0000 0001 0011 0000 1000 0011
  
- load constant to A, increment sp
+ load immediate to A, increment sp
 ~0000 0000 0000 0001 0011 0000 0100 0011
  
  put AB in bp
@@ -1595,7 +1595,7 @@
  
  No change
  
- load constant to A
+ load immediate to A
 ~0000 0000 0000 0001 0000 0000 0100 0011
  
  put ipl in B, save inverse carry of 2A, decrement sp
@@ -1678,6 +1678,18 @@
  ..., addr_h, addr_l ->
  ...
  
+ load sp to B, increment sp
+~0000 0000 0000 0000 0011 0000 1000 0010
+ 
+ load sp to A, increment sp
+~0000 0000 0000 0000 0011 0000 0100 0010
+ 
+ put AB in ip
+~0000 0000 0000 0001 1000 0000 0000 0000
+ 
+ next inst
+~0000 0000 0000 0011 0000 0000 0000 0011
+ 
  ----------------
 .JMPL word OR label
  |----|------|
@@ -1687,6 +1699,18 @@
  Jumps to the address
  
  No change
+ 
+ load immediate to B
+~0000 0000 0000 0001 0000 0000 1000 0011
+ 
+ load immediate to A
+~0000 0000 0000 0001 0000 0000 0100 0011
+ 
+ put AB in ip
+~0000 0000 0000 0001 1000 0000 0000 0000
+ 
+ next inst
+~0000 0000 0000 0011 0000 0000 0000 0011
  
  ----------------
 .JMPLC
@@ -1810,15 +1834,15 @@
  ----------------
 .READ
  |----|
->| FE |
+>| FA |
  |----|
  
- Reads the value from IO, placing it on the stack
+ Reads the lower byte from IO
  
  ... ->
  ..., value
  
- decrement sp, load IO to A
+ decrement sp, load IOl to A
 ~0000 0000 0000 0000 0010 0000 0101 1000
 
  store A at sp
@@ -1828,12 +1852,38 @@
 ~0000 0000 0000 0011 0000 0000 0000 0011
  
  ----------------
-.WRITE
+.READW
  |----|
->| FF |
+>| FB |
  |----|
  
- Writes the value on the stack to IO
+ Reads the word from IO
+ 
+ ... ->
+ ..., value_h, value_l
+ 
+ decrement sp, load IOl to A
+~0000 0000 0000 0000 0010 0000 0101 1000
+
+ store A at sp
+~0000 0000 0000 0000 0000 0000 0010 1010
+ 
+ decrement sp, load IOh to A
+~1000 0000 0000 0000 0010 0000 0101 1000
+
+ store A at sp
+~0000 0000 0000 0000 0000 0000 0010 1010
+ 
+ next inst
+~0000 0000 0000 0011 0000 0000 0000 0011
+ 
+ ----------------
+.WRITE
+ |----|
+>| FC |
+ |----|
+ 
+ Writes the byte to IO
  
  ..., value ->
  ...
@@ -1843,7 +1893,62 @@
  
  increment sp & next inst
 ~0000 0000 0000 0011 0011 0000 0000 0011
-    
+ 
+ ----------------
+.WRITEW
+ |----|
+>| FD |
+ |----|
+ 
+ Writes the word to IO
+ 
+ ..., value_h, value_l ->
+ ...
+ 
+ write stack to IO, increment sp
+~1000 0000 0000 0000 0011 0000 0000 0010
+ 
+ write stack to IO, increment sp
+~1000 0000 0000 0000 0011 0000 0000 0010
+ 
+ next inst
+~0000 0000 0000 0011 0000 0000 0000 0011
+ 
+ ----------------
+.WRITEI byte
+ |----|------|
+>| FE | byte |
+ |----|------|
+ 
+ Writes the byte to IO
+ 
+ No change
+ 
+ write immediate to IO
+~1000 0000 0000 0001 0000 0000 0000 0011
+ 
+ next inst
+~0000 0000 0000 0011 0000 0000 0000 0011
+ 
+ ----------------
+.WRITEIW word
+ |----|------|
+>| FF | word |
+ |----|------|
+ 
+ Writes the word to IO
+ 
+ No change
+ 
+ write immediate to IO
+~1000 0000 0000 0001 0000 0000 0000 0011
+ 
+ write immediate to IO
+~1000 0000 0000 0001 0000 0000 0000 0011
+ 
+ next inst
+~0000 0000 0000 0011 0000 0000 0000 0011
+ 
  ----------------
  
  
