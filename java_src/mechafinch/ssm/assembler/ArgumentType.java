@@ -13,7 +13,7 @@ public enum ArgumentType {
 	OFFSET_LABEL(2),
 	SHORT_OFFSET_LABEL(2);
 	
-	public int length;
+	private int length;
 	
 	public int getLength() { return length; } // getty boi for the stream gods
 	
