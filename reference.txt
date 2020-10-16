@@ -8,7 +8,7 @@ in a compact form. Since the main ISA includes all possible information
 
 This file is generated from the ISA.
 
-Total Opcodes: 143
+Total Opcodes: 222
 
 
 00 NOP
@@ -26,8 +26,8 @@ Total Opcodes: 143
  ..., value ->
  ...
 
-04 POP2
- ..., value1, value2 ->
+04 POPW
+ ..., value_h, value_l ->
  ...
 
 05 POP unsigned byte
@@ -43,44 +43,100 @@ Total Opcodes: 143
  ..., value, byte, value
 
 08 DUPO2
- ..., value, byte1, byte2 ->
- ..., value, byte1, byte2, value
+ ..., value, <2 bytes> ->
+ ..., value, <2 bytes>, value
 
 09 DUPON unsigned byte
  ..., value, <n bytes> ->
  ..., value, <n bytes>, value
 
-0A DUP2
+0A DUPONPB unsigned byte
+ ..., value, <n bytes> ->
+ ..., value, <n bytes>, value
+
+0B DUPW
  ..., value_h, value_l ->
  ..., value_h, value_l, value_h, value_l
 
-0B DUP2O1
+0C DUPWO1
  ..., value_h, value_l, byte ->
  ..., value_h, value_l, byte, value_h, value_low
 
-0C DUP2O2
- ..., value_h, value_l, byte1, byte2 ->
- ..., value_h, value_l, byte1, byte2, value_h, value_l
+0D DUPWO2
+ ..., value_h, value_l, <2 bytes> ->
+ ..., value_h, value_l, <2 bytes>, value_h, value_l
 
-0D DUP2O2PB
- ..., value_h, value_l, byte1, byte2 ->
- ..., value_h, value_l, byte1, byte2, value_h, value_l
+0E DUPWO2PB
+ ..., value_h, value_l, <2 bytes> ->
+ ..., value_h, value_l, <2 bytes>, value_h, value_l
 
-0E DUP2ON unsigned byte
+0F DUPWON unsigned byte
  ..., value_h, value_l, <n bytes> ->
  ..., value_h, value_l, <n bytes>, value_l
 
-0F DUP2ONPB unsigned byte
+10 DUPWONPB unsigned byte
  ..., value_h, value_l, <n bytes> ->
  ..., value_h, value_l, <n bytes>, value_h, value_l
 
-10 SWAP
+11 SWAP
  ..., value1, value2 ->
  ..., value2, value1
 
-11 SWAP2
+12 SWAPO1
+ ..., value1, byte, value2 ->
+ ..., value2, byte, value1
+
+13 SWAPO2
+ ..., value1, <2 bytes>, value2 ->
+ ..., value2, <2 bytes>, value1
+
+14 SWAPON unsigned byte
+ ..., value1, <n bytes>, value2 ->
+ ..., value2, <n bytes>, value1
+
+15 SWAPONPB unsigned byte
+ ..., value1, <n bytes>, value2 ->
+ ..., value2, <n bytes>, value1
+
+16 SWAPW
  ..., value1_h, value1_l, value2_h, value2_l ->
  ..., value2_h, value2_l, value1_h, value1_l
+
+17 SWAPWPB
+ ..., value1_h, value1_l, value2_h, value2_l ->
+ ..., value2_h, value2_l, value1_h, value1_l
+
+18 SWAPWO1
+ ..., value1_h, value1_l, byte, value2_h, value2_l ->
+ ..., value2_h, value2_l, byte, value1_h, value1_l
+
+19 SWAPWO1PB
+ ..., value1_h, value1_l, byte, value2_h, value2_l ->
+ ..., value2_h, value2_l, byte, value1_h, value1_l
+
+1A SWAPWO2
+ ..., value1_h, value1_l, <2 bytes>, value2_h, value2_l ->
+ ..., value2_h, value2_l, <2 bytes>, value1_h, value1_l
+
+1B SWAPWO2PB
+ ..., value1_h, value1_l, <2 bytes>, value2_h, value2_l ->
+ ..., value2_h, value2_l, <2 bytes>, value1_h, value1_l
+
+1C SWAPWON unsigned byte
+ ..., value1_h, value1_l, <n bytes>, value2_h, value2_l ->
+ ..., value2_h, value2_l, <n bytes>, value1_h, value1_l
+
+1D SWAPWONPB unsigned byte
+ ..., value1_h, value1_l, <n bytes>, value2_h, value2_l ->
+ ..., value2_h, value2_l, <n bytes>, value1_h, value1_l
+
+1E SWAPBW
+ ..., byte, word_h, word_l ->
+ ..., word_h, word_l, byte
+
+1F SWAPWB
+ ..., word_h, word_l, byte ->
+ ..., byte, word_h, word_l
 
 20 LOAD word OR label
  ... ->
@@ -322,253 +378,512 @@ Total Opcodes: 143
  ..., value_h, value_l ->
  ...
 
-5C LEA
+5C LEA  BPADD
  ..., offset ->
  ..., addr_h, addr_l
 
-5D LEA byte
+5D LEA byte  BPADD byte
  ... ->
  ..., addr_h, addr_l
 
-5E WLEA
+5E WLEA  BPADDW
  ..., offset_h, offset_l ->
  ..., addr_h, addr_l
 
-5F WLEA word
+5F WLEA word  BPADDW word
  ... ->
  ..., addr_h, addr_l
 
- PUSHBP
+60 PUSHBP
  ... ->
  ..., bp_h, bp_l
 
- POPBP
+61 POPBP
  ..., bp_h, bp_l ->
  ...
 
- SWAPBP
+62 SWAPBP
  ..., value_h, value_l ->
  ..., bp_h, bp_l
 
- SETBP word
+63 SETBP word
  No change
 
- INCBP
+64 INCBP
  No change
 
- DECBP
+65 DECBP
  No change
 
- PUSHS
+66 PUSHS
  ... ->
  ..., value
 
- PUSHSW
+67 PUSHSW
  ... ->
  ..., value_h, value_l
 
- POPS
+68 POPS
  ..., value ->
  ...
 
- POPSW
+69 POPSW
  ..., value_h, value_l ->
  ...
 
- MOVS
+6A MOVS
  ..., pointer_h, pointer_l ->
  ..., pointer+1_h, pointer+1_l
 
- MOVSW
+6B MOVSW
  ..., pointer_h, pointer_l ->
  ..., pointer+2_h, pointer+2_l
 
- CE
- ..., valuea, valueb ->
- ...
+6C MOVSR
+ ..., pointer_h, pointer_l ->
+ ..., pointer+1_h, pointer+1_l
 
- CEI byte
- ..., valuea ->
- ...
+6D MOVSRW
+ ..., pointer_h, pointer_l ->
+ ..., pointer+2_h, pointer+2_l
 
- CEW
- ..., valuea_h, valuea_l, valueb_h, valueb_l ->
- ...
-
- CEWI word
- ..., valuea_h, valuea_l ->
- ...
-
- CNE
- ..., valuea, valueb ->
- ...
-
- CNEI byte
- ..., valuea ->
- ...
-
- CNEW
- ..., valuea_h, valuea_l, valueb_h, valueb_l ->
- ...
-
- CNEWI word
- ..., valuea_h, valuea_l ->
- ...
-
- CG
- ..., valuea, valueb ->
- ...
-
- CGI byte
- ..., valuea ->
- ...
-
- CGW
- ..., valuea_h, valuea_l, valueb_h, valueb_l ->
- ...
-
- CGWI word
- ..., valuea_h, valuea_l ->
- ...
-
- CGE
- ..., valuea, valueb ->
- ...
-
- CGEI byte
- ..., valuea ->
- ...
-
- CGEW
- ..., valuea_h, valuea_l, valueb_h, valueb_l ->
- ...
-
- CGEWI word
- ..., valuea_h, valuea_l ->
- ...
-
- CL
- ..., valuea, valueb ->
- ...
-
- CLI byte
- ..., valuea ->
- ...
-
- CLW
- ..., valuea_h, valuea_l, valueb_h, valueb_l ->
- ...
-
- CLWI word
- ..., valuea_h, valuea_l ->
- ...
-
- CLE
- ..., valuea, valueb ->
- ...
-
- CLEI byte
- ..., valuea ->
- ...
-
- CLEW
- ..., valuea_h, valuea_l, valueb_h, valueb_l ->
- ...
-
- CLEWI word
- ..., valuea_h, valuea_l ->
- ...
-
-80 JMPS
- ..., disp ->
- ...
-
-81 JMPS byte OR short offset label
- No change
-
-82 JMPSC
- ..., disp ->
- ...
-
-83 JMPSC byte OR short offset label
- No change
-
-84 JMPSN
- ..., disp ->
- ...
-
-85 JMPSN byte OR short offset label
- No change
-
-86 JMPL
+6E LOOP
  ..., addr_h, addr_l ->
  ...
 
-87 JMPL word OR label
+6F LOOP word
  No change
 
-88 JMPLC
+70 UCE
+ ..., valuea, valueb ->
+ ...
+
+71 UCE byte
+ ..., valuea ->
+ ...
+
+72 UCEW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+
+73 UCEW word
+ ..., valuea_h, valuea_l ->
+ ...
+
+74 UCNE
+ ..., valuea, valueb ->
+ ...
+
+75 UCNE byte
+ ..., valuea ->
+ ...
+
+76 UCNEW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+
+77 UCNEW word
+ ..., valuea_h, valuea_l ->
+ ...
+
+78 UCG
+ ..., valuea, valueb ->
+ ...
+
+79 UCG byte
+ ..., valuea ->
+ ...
+
+7A UCGW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+
+7B UCGW word
+ ..., valuea_h, valuea_l ->
+ ...
+
+7C UCGE
+ ..., valuea, valueb ->
+ ...
+
+7D UCGE byte
+ ..., valuea ->
+ ...
+
+7E UCGEW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+
+7F UCGEW word
+ ..., valuea_h, valuea_l ->
+ ...
+
+80 UCL
+ ..., valuea, valueb ->
+ ...
+
+81 UCL byte
+ ..., valuea ->
+ ...
+
+82 UCLW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+
+83 UCLW word
+ ..., valuea_h, valuea_l ->
+ ...
+
+84 UCLE
+ ..., valuea, valueb ->
+ ...
+
+85 UCLE byte
+ ..., valuea ->
+ ...
+
+86 UCLEW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+
+87 UCLEW word
+ ..., valuea_h, valuea_l ->
+ ...
+
+88 SCE
+ ..., valuea, valueb ->
+ ...
+
+89 SCE byte
+ ..., valuea ->
+ ...
+
+8A SCEW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+
+8B SCEW word
+ ..., valuea_h, valuea_l ->
+ ...
+
+8C SCNE
+ ..., valuea, valueb ->
+ ...
+
+8D SCNE byte
+ ..., valuea ->
+ ...
+
+8E SCNEW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+
+8F SCNEW word
+ ..., valuea_h, valuea_l ->
+ ...
+
+90 SCG
+ ..., valuea, valueb ->
+ ...
+
+91 SCG byte
+ ..., valuea ->
+ ...
+
+92 SCGW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+
+93 SCGW word
+ ..., valuea_h, valuea_l ->
+ ...
+
+94 SCGE
+ ..., valuea, valueb ->
+ ...
+
+95 SCGE byte
+ ..., valuea ->
+ ...
+
+96 SCGEW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+
+97 SCGEW word
+ ..., valuea_h, valuea_l ->
+ ...
+
+98 SCL
+ ..., valuea, valueb ->
+ ...
+
+99 SCL byte
+ ..., valuea ->
+ ...
+
+9A SCLW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+
+9B SCLW word
+ ..., valuea_h, valuea_l ->
+ ...
+
+9C SCLE
+ ..., valuea, valueb ->
+ ...
+
+9D SCLE byte
+ ..., valuea ->
+ ...
+
+9E SCLEW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+
+9F SCLEW word
+ ..., valuea_h, valuea_l ->
+ ...
+
+A0 JMPS
+ ..., disp ->
+ ...
+
+A1 JMPS byte OR short offset label
+ No change
+
+A2 JMPSC
+ ..., disp ->
+ ...
+
+A3 JMPSC byte OR short offset label
+ No change
+
+A4 JMPSN
+ ..., disp ->
+ ...
+
+A5 JMPSN byte OR short offset label
+ No change
+
+A6 JMPL
  ..., addr_h, addr_l ->
  ...
 
-89 JMPLC word OR label
+A7 JMPL word OR label
  No change
 
-8A JMPLN
+A8 JMPLC
  ..., addr_h, addr_l ->
  ...
 
-8B JMPLN word OR label
+A9 JMPLC word OR label
  No change
 
-8C CALL
+AA JMPLN
+ ..., addr_h, addr_l ->
+ ...
+
+AB JMPLN word OR label
+ No change
+
+AC CALL
  ..., addr_h, addr_l ->
  ..., ip_h, ip_l
 
-8D CALL word OR label
+AD CALL word OR label
  ... ->
  ..., ip_h, ip_l
 
-8E RET
+AE RET
  ..., ip_h, ip_l ->
  ...
 
-8F RET unsigned byte
+AF RET unsigned byte
  ..., <n bytes>, ip_h, ip_l ->
  ...
 
-90 ENTER byte
+B0 ENTER byte
  ... ->
  ..., bp_h, bp_l, <value bytes of uninitialized data>
 
-91 ENTER word
+B1 ENTER word
  ... ->
  ..., bp_h, bp_l, <value bytes of uninitialized data>
 
-92 LEAVE
+B2 LEAVE
  ..., bp_h, bp_l, ... ->
  ...
 
-FA READ
+C0 ADD
+ ..., valuea, valueb ->
+ ..., a+b
+
+C1 ADDC
+ ..., valuea, valueb ->
+ ..., a+b+c
+
+C2 ADD byte
+ ..., value ->
+ ..., value+imm
+
+C3 ADDC byte
+ ..., value ->
+ ..., value+imm+c
+
+C4 ADDW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ..., a+b_h, a+b_l
+
+C5 ADDWC
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ..., a+b+c_h, a+b+c_l
+
+C6 ADDW word
+ ..., value_h, value_l ->
+ ..., value+imm_h, value+imm_l
+
+C7 ADDWC word
+ ..., value_h, value_l ->
+ ..., value+imm+c_h, value+imm+c_l
+
+C8 SUB
+ ..., valuea, valueb ->
+ ..., a-b
+
+C9 SUBB
+ ..., valuea, valueb ->
+ ..., a-b-c
+
+CA SUB byte
+ ..., value ->
+ ..., value-imm
+
+CB SUBB byte
+ ..., value ->
+ ..., value-imm-c
+
+CC SUBW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ..., a-b_h, a-b_l
+
+CD SUBWB
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ..., a-b-c_h, a-b-c_l
+
+CE SUBW word
+ ..., value_h, value_l ->
+ ..., value-imm_h, value-imm_l
+
+CF SUBWB word
+ ..., value_h, value_l ->
+ ..., value-imm-c_h, value-imm-c_l
+
+D0 AND
+ ..., valuea, valueb ->
+ ..., a&b
+
+D1 AND byte
+ ..., value ->
+ ..., value&imm
+
+D2 ANDW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ..., a&b_h, a&b_l
+
+D3 ANDW word
+ ..., value_h, value_l ->
+ ..., value&imm_h, value&imm_l
+
+D4 OR
+ ..., valuea, valueb ->
+ ..., a|b
+
+D5 OR byte
+ ..., value ->
+ ..., value|imm
+
+D6 ORW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ..., a|b_h, a|b_l
+
+D7 ORW word
+ ..., value_h, value_l ->
+ ..., value|imm_h, value|imm_l
+
+D8 XOR
+ ..., valuea, valueb ->
+ ..., a^b
+
+D9 XOR byte
+ ..., value ->
+ ..., value^imm
+
+DA XORW
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ..., a^b_h, a^b_l
+
+DB XORW word
+ ..., value_h, value_l ->
+ ..., value^imm_h, value^imm_l
+
+DC NOT
+ ..., value ->
+ ..., !value
+
+DD NOTW
+ ..., value_h, value_l ->
+ ..., !value_h, !value_l
+
+DE SHL
+ ..., value ->
+ ..., value<<1
+
+DF SHLW
+ ..., value_h, value_l ->
+ ..., value<<1_h, value<<1_l
+
+E0 SRA
+ ..., value ->
+ ..., value>>1
+
+E1 SRAW
+ ..., value_h, value_l ->
+ ..., value>>1_h, value>>1_l
+
+E2 SRL
+ ..., value ->
+ ..., value>>>1
+
+E3 SRLW
+ ..., value_h, value_l ->
+ ..., value>>>1_h, value>>>1_l
+
+F9 READ
  ... ->
  ..., value
 
-FB READW
+FA READW
  ... ->
  ..., value_h, value_l
 
-FC WRITE
+FB WRITE
  ..., value ->
  ...
 
-FD WRITEW
+FC WRITEW
  ..., value_h, value_l ->
  ...
 
-FE WRITEI byte
+FD WRITEI byte
  No change
 
-FF WRITEIW word
+FE WRITEIW word
  No change
+
+FF WRITEUIW byte
+ ..., value ->
+ ...
 
 

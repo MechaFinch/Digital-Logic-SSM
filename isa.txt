@@ -56,7 +56,7 @@
 >| 01 | byte |
  |----|------|
  
- Pushes a byte
+ Pushe byte
  
  ... ->
  ..., value
@@ -76,7 +76,7 @@
 >| 02 | word |
  |----|------|
  
- Pushes an address
+ Push word
  
  ... ->
  ..., val_h, val_l
@@ -102,7 +102,7 @@
 >| 03 |
  |----|
  
- Pops 1 byte
+ Pop 1 byte
  
  ..., value ->
  ...
@@ -111,14 +111,14 @@
 ~0000 0000 0000 0011 0011 0000 0000 0011
  
  ----------------
-.POP2
+.POPW
  |----|
 >| 04 |
  |----|
  
- Pops 2 bytes
+ Pop 2 bytes
  
- ..., value1, value2 ->
+ ..., value_h, value_l ->
  ...
  
  increment sp
@@ -133,7 +133,7 @@
 >| 05 | byte |
  |----|------|
  
- Pops n bytes
+ Pop n bytes
  Affects carry flag
  
  ..., <n bytes> ->
@@ -167,7 +167,7 @@
 >| 06 |
  |----|
  
- Duplicates the value
+ Duplicate byte
  
  ..., value ->
  ..., value, value
@@ -187,7 +187,7 @@
 >| 07 |
  |----|
  
- Duplicates the value over 1 byte
+ Duplicate byte over 1 byte
  
  ..., value, byte ->
  ..., value, byte, value
@@ -198,10 +198,10 @@
 >| 08 |
  |----|
  
- Duplicates the value over 2 bytes
+ Duplicate byte over 2 bytes
  
- ..., value, byte1, byte2 ->
- ..., value, byte1, byte2, value
+ ..., value, <2 bytes> ->
+ ..., value, <2 bytes>, value
  
  ----------------
 .DUPON unsigned byte
@@ -209,18 +209,30 @@
 >| 09 | byte |
  |----|------|
  
- Duplicates the value over n bytes
+ Duplicate byte over n bytes
+ Sets the base pointer to an undefined value, use DUPONPB to avoid this
  
  ..., value, <n bytes> ->
  ..., value, <n bytes>, value
  
  ----------------
-.DUP2
+.DUPONPB unsigned byte
+ |----|------|
+>| 0A | byte |
+ |----|------|
+ 
+ Duplicate byte over n bytes, preserve base pointer
+ 
+ ..., value, <n bytes> ->
+ ..., value, <n bytes>, value
+ 
+ ----------------
+.DUPW
  |----|
->| 0A |
+>| 0B |
  |----|
  
- Duplicates the 2-byte value
+ Duplicate word
  
  ..., value_h, value_l ->
  ..., value_h, value_l, value_h, value_l
@@ -244,58 +256,58 @@
 ~0000 0000 0000 0011 0000 0000 0000 0011
  
  ----------------
-.DUP2O1
+.DUPWO1
  |----|
->| 0B |
+>| 0C |
  |----|
  
- Duplicates the 2-byte value over 1 byte
+ Duplicate word over 1 byte
  
  ..., value_h, value_l, byte ->
  ..., value_h, value_l, byte, value_h, value_low
  
  ----------------
-.DUP2O2
- |----|
->| 0C |
- |----|
- 
- Duplicates the 2-byte value over 2 bytes
- Sets the base pointer to the address of the original value_l, use DUP2O2PB to avoid this
- 
- ..., value_h, value_l, byte1, byte2 ->
- ..., value_h, value_l, byte1, byte2, value_h, value_l
- 
- ----------------
-.DUP2O2PB
+.DUPWO2
  |----|
 >| 0D |
  |----|
  
- Duplicates the 2-byte value over 2 bytes, preserving the base pointer
+ Duplicate word over 2 bytes
+ Sets the base pointer to the address of the original value_h, use DUP2O2PB to avoid this
  
- ..., value_h, value_l, byte1, byte2 ->
- ..., value_h, value_l, byte1, byte2, value_h, value_l
+ ..., value_h, value_l, <2 bytes> ->
+ ..., value_h, value_l, <2 bytes>, value_h, value_l
  
  ----------------
-.DUP2ON unsigned byte
+.DUPWO2PB
+ |----|
+>| 0E |
+ |----|
+ 
+ Duplicate word over 2 bytes, preserve base pointer
+ 
+ ..., value_h, value_l, <2 bytes> ->
+ ..., value_h, value_l, <2 bytes>, value_h, value_l
+ 
+ ----------------
+.DUPWON unsigned byte
  |----|------|
->| 0E | byte |
+>| 0F | byte |
  |----|------|
  
- Duplicates the 2-byte value over n bytes
- Sets the base pointer to the address of the original value_l, use DUP2ONPB to avoid this
+ Duplicate word over n bytes
+ Sets the base pointer to the address of the original value_h, use DUP2ONPB to avoid this
  
  ..., value_h, value_l, <n bytes> ->
  ..., value_h, value_l, <n bytes>, value_l
  
  ----------------
-.DUP2ONPB unsigned byte
+.DUPWONPB unsigned byte
  |----|------|
->| 0F | byte |
+>| 10 | byte |
  |----|------|
  
- Duplicates the 2-byte value over n bytes, preserving the base pointer
+ Duplicate word over n bytes, preserve base pointer
  
  ..., value_h, value_l, <n bytes> ->
  ..., value_h, value_l, <n bytes>, value_h, value_l
@@ -303,10 +315,10 @@
  ----------------
 .SWAP
  |----|
->| 10 |
+>| 11 |
  |----|
  
- Swaps the top 2 bytes
+ Swap bytes
  
  ..., value1, value2 ->
  ..., value2, value1
@@ -327,54 +339,163 @@
 ~0000 0000 0000 0011 0000 0000 0000 0011
  
  ----------------
-.SWAP2
+.SWAPO1
  |----|
->| 11 |
+>| 12 |
  |----|
  
- Swaps the top 2 words
+ Swap bytes over 1 byte
+ 
+ ..., value1, byte, value2 ->
+ ..., value2, byte, value1
+ 
+ ----------------
+.SWAPO2
+ |----|
+>| 13 |
+ |----|
+ 
+ Swap bytes over 2 bytes
+ 
+ ..., value1, <2 bytes>, value2 ->
+ ..., value2, <2 bytes>, value1
+ 
+ ----------------
+.SWAPON unsigned byte
+ |----|------|
+>| 14 | byte |
+ |----|------|
+ 
+ Swap bytes over n bytes
+ Sets the base pointer to an undefined value, use SWAPONPB to avoid this
+ 
+ ..., value1, <n bytes>, value2 ->
+ ..., value2, <n bytes>, value1
+ 
+ ----------------
+.SWAPONPB unsigned byte
+ |----|------|
+>| 15 | byte |
+ |----|------|
+ 
+ Swap bytes over n bytes, preserve base pointer
+ 
+ ..., value1, <n bytes>, value2 ->
+ ..., value2, <n bytes>, value1
+ 
+ ----------------
+.SWAPW
+ |----|
+>| 16 |
+ |----|
+ 
+ Swap words
+ Sets the base pointer to value2, use SWAPWPB to avoid this
  
  ..., value1_h, value1_l, value2_h, value2_l ->
  ..., value2_h, value2_l, value1_h, value1_l
  
- load sp to A, increment sp
-~0000 0000 0000 0000 0011 0000 0100 0010
+ ----------------
+.SWAPWPB
+ |----|
+>| 17 |
+ |----|
  
- increment sp
-~0000 0000 0000 0000 0011 0000 0000 0000
+ Swap words, preserve base pointer
  
- load sp to B
-~0000 0000 0000 0000 0000 0000 1000 0010
+ ..., value1_h, value1_l, value2_h, value2_l ->
+ ..., value2_h, value2_l, value1_h, value1_l
  
- store A at sp, decrement sp
-~0000 0000 0000 0000 0010 0000 0010 1010
+ ----------------
+.SWAPWO1
+ |----|
+>| 18 |
+ |----|
  
- load sp to A, decrement sp
-~0000 0000 0000 0000 0010 0000 0100 0010
+ Swap words over 1 byte
+ Sets the base pointer to value2, use SWAPO1PB to avoid this
  
- store B at sp, increment sp
-~0000 0000 0000 0000 0011 0000 0010 1110
+ ..., value1_h, value1_l, byte, value2_h, value2_l ->
+ ..., value2_h, value2_l, byte, value1_h, value1_l
  
- increment sp
-~0000 0000 0000 0000 0011 0000 0000 0000
+ ----------------
+.SWAPWO1PB
+ |----|
+>| 19 |
+ |----|
  
- increment sp
-~0000 0000 0000 0000 0011 0000 0000 0000
+ Swap words over 1 byte, preserve base pointer
  
- load sp to B
-~0000 0000 0000 0000 0000 0000 1000 0010
+ ..., value1_h, value1_l, byte, value2_h, value2_l ->
+ ..., value2_h, value2_l, byte, value1_h, value1_l
  
- store A at sp, decrement sp
-~0000 0000 0000 0000 0010 0000 0010 1010
+ ----------------
+.SWAPWO2
+ |----|
+>| 1A |
+ |----|
  
- decrement sp
-~0000 0000 0000 0000 0010 0000 0000 0000
+ Swap words over 2 bytes
+ Sets the base pointer to value2, use SWAPO2PB to avoid this
  
- store B at sp, decrement sp
-~0000 0000 0000 0000 0010 0000 0010 1110
+ ..., value1_h, value1_l, <2 bytes>, value2_h, value2_l ->
+ ..., value2_h, value2_l, <2 bytes>, value1_h, value1_l
  
- next inst
-~0000 0000 0000 0011 0000 0000 0000 0011
+ ----------------
+.SWAPWO2PB
+ |----|
+>| 1B |
+ |----|
+ 
+ Swap words over 2 bytes, preserve base pointer
+ 
+ ..., value1_h, value1_l, <2 bytes>, value2_h, value2_l ->
+ ..., value2_h, value2_l, <2 bytes>, value1_h, value1_l
+ 
+ ----------------
+.SWAPWON unsigned byte
+ |----|------|
+>| 1C | byte |
+ |----|------|
+ 
+ Swap words over n bytes
+ Sets the base pointer to value2, use SWAPWONPB to avoid this
+ 
+ ..., value1_h, value1_l, <n bytes>, value2_h, value2_l ->
+ ..., value2_h, value2_l, <n bytes>, value1_h, value1_l
+ 
+ ----------------
+.SWAPWONPB unsigned byte
+ |----|------|
+>| 1D | byte |
+ |----|------|
+ 
+ Swap words over n bytes, preserve base pointer
+ 
+ ..., value1_h, value1_l, <n bytes>, value2_h, value2_l ->
+ ..., value2_h, value2_l, <n bytes>, value1_h, value1_l
+ 
+ ----------------
+.SWAPBW
+ |----|
+>| 1E |
+ |----|
+ 
+ Swaps a byte and a word
+ 
+ ..., byte, word_h, word_l ->
+ ..., word_h, word_l, byte
+ 
+ ----------------
+.SWAPWB
+ |----|
+>| 1F |
+ |----|
+ 
+ Swaps a word and a byte
+ 
+ ..., word_h, word_l, byte ->
+ ..., byte, word_h, word_l
  
  ----------------
 .LOAD word OR label
@@ -1212,7 +1333,7 @@
  ...
  
  ----------------
-.LEA
+.LEA  BPADD
  |----|
 >| 5C |
  |----|
@@ -1224,7 +1345,7 @@
  ..., addr_h, addr_l
  
  ----------------
-.LEA byte
+.LEA byte  BPADD byte
  |----|------|
 >| 5D | byte |
  |----|------|
@@ -1236,7 +1357,7 @@
  ..., addr_h, addr_l
  
  ----------------
-.WLEA
+.WLEA  BPADDW
  |----|
 >| 5E |
  |----|
@@ -1248,7 +1369,7 @@
  ..., addr_h, addr_l
  
  ----------------
-.WLEA word
+.WLEA word  BPADDW word
  |----|------|
 >| 5F | word |
  |----|------|
@@ -1261,6 +1382,9 @@
  
  ----------------
 .PUSHBP
+ |----|
+>| 60 |
+ |----|
  
  Pushes the base pointer
  
@@ -1269,6 +1393,9 @@
  
  ----------------
 .POPBP
+ |----|
+>| 61 |
+ |----|
  
  Pops the base pointer
  
@@ -1277,6 +1404,9 @@
 
  ----------------
 .SWAPBP
+ |----|
+>| 62 |
+ |----|
  
  Swaps the base pointer with the top of the stack
  
@@ -1285,6 +1415,9 @@
  
  ----------------
 .SETBP word
+ |----|
+>| 63 |
+ |----|
  
  Sets the base pointer to the value
  
@@ -1292,6 +1425,9 @@
  
  ----------------
 .INCBP
+ |----|
+>| 64 |
+ |----|
  
  Increments the base pointer
  
@@ -1299,6 +1435,9 @@
  
  ----------------
 .DECBP
+ |----|
+>| 65 |
+ |----|
  
  Decrements the base pointer
  
@@ -1306,6 +1445,9 @@
  
  ----------------
 .PUSHS
+ |----|
+>| 66 |
+ |----|
  
  Pushes the byte at [base pointer] and increments the base pointer
  
@@ -1314,6 +1456,9 @@
  
  ----------------
 .PUSHSW
+ |----|
+>| 67 |
+ |----|
  
  Pushes the word at [base pointer] and increments the base pointer twice
  
@@ -1322,6 +1467,9 @@
  
  ----------------
 .POPS
+ |----|
+>| 68 |
+ |----|
  
  Pops the byte to [base pointer] and increments the base pointer
  
@@ -1330,6 +1478,9 @@
  
  ----------------
 .POPSW
+ |----|
+>| 69 |
+ |----|
  
  Pops the word to [base pointer] and increments the base pointer twice
  
@@ -1338,6 +1489,9 @@
  
  ----------------
 .MOVS
+ |----|
+>| 6A |
+ |----|
  
  Copies the byte at [base pointer] to [pointer] and increments both
  
@@ -1346,6 +1500,9 @@
  
  ----------------
 .MOVSW
+ |----|
+>| 6B |
+ |----|
  
  Copies the word at [base pointer] to [pointer] and increments both twice
  
@@ -1353,193 +1510,572 @@
  ..., pointer+2_h, pointer+2_l
  
  ----------------
-.CE
+.MOVSR
+ |----|
+>| 6C |
+ |----|
  
- Sets the condition flag if a = b
+ Copies the byte at [pointer] to [base pointer] and increments both
+ 
+ ..., pointer_h, pointer_l ->
+ ..., pointer+1_h, pointer+1_l
+ 
+ ----------------
+.MOVSRW
+ |----|
+>| 6D |
+ |----|
+ 
+ Copies the word at [pointer] to [base pointer] and increments both twice
+ 
+ ..., pointer_h, pointer_l ->
+ ..., pointer+2_h, pointer+2_l
+ 
+ ----------------
+.LOOP
+ |----|
+>| 6E |
+ |----|
+ 
+ Decrements the base pointer, jumps to the address if BP = 0
+ 
+ ..., addr_h, addr_l ->
+ ...
+ 
+ ----------------
+.LOOP word
+ |----|
+>| 6F |
+ |----|
+ 
+ Decrements the base pointer, jumps to the address if BP = 0
+ 
+ No change
+ 
+ ----------------
+.UCE
+ |----|
+>| 70 |
+ |----|
+ 
+ Sets the condition flag if a = b (unsigned)
  
  ..., valuea, valueb ->
  ...
  
  ----------------
-.CEI byte
+.UCE byte
+ |----|------|
+>| 71 | byte |
+ |----|------|
  
- Sets the condition flag if a = b
+ Sets the condition flag if a = b (unsigned)
  
  ..., valuea ->
  ...
  
  ----------------
-.CEW
+.UCEW
+ |----|
+>| 72 |
+ |----|
  
- Sets the condition flag if a = b
+ Sets the condition flag if a = b (unsigned)
  
  ..., valuea_h, valuea_l, valueb_h, valueb_l ->
  ...
  
  ----------------
-.CEWI word
+.UCEW word
+ |----|------|
+>| 73 | word |
+ |----|------|
  
- Sets the condition flag if a = b
+ Sets the condition flag if a = b (unsigned)
  
  ..., valuea_h, valuea_l ->
  ...
  
  ----------------
-.CNE
+.UCNE
+ |----|
+>| 74 |
+ |----|
  
- Sets the condition flag if a != b
+ Sets the condition flag if a != b (unsigned)
  
  ..., valuea, valueb ->
  ...
  
  ----------------
-.CNEI byte
+.UCNE byte
+ |----|------|
+>| 75 | byte |
+ |----|------|
  
- Sets the condition flag if a != b
+ Sets the condition flag if a != b (unsigned)
  
  ..., valuea ->
  ...
  
  ----------------
-.CNEW
+.UCNEW
+ |----|
+>| 76 |
+ |----|
  
- Sets the condition flag if a != b
+ Sets the condition flag if a != b (unsigned)
  
  ..., valuea_h, valuea_l, valueb_h, valueb_l ->
  ...
  
  ----------------
-.CNEWI word
+.UCNEW word
+ |----|------|
+>| 77 | word |
+ |----|------|
  
- Sets the condition flag if a != b
+ Sets the condition flag if a != b (unsigned)
  
  ..., valuea_h, valuea_l ->
  ...
  
  ----------------
-.CG
+.UCG
+ |----|
+>| 78 |
+ |----|
  
- Sets the condition flag if a > b
+ Sets the condition flag if a > b (unsigned)
  
  ..., valuea, valueb ->
  ...
  
  ----------------
-.CGI byte
+.UCG byte
+ |----|------|
+>| 79 | byte |
+ |----|------|
  
- Sets the condition flag if a > b
+ Sets the condition flag if a > b (unsigned)
  
  ..., valuea ->
  ...
  
  ----------------
-.CGW
+.UCGW
+ |----|
+>| 7A |
+ |----|
  
- Sets the condition flag if a > b
+ Sets the condition flag if a > b (unsigned)
  
  ..., valuea_h, valuea_l, valueb_h, valueb_l ->
  ...
  
  ----------------
-.CGWI word
+.UCGW word
+ |----|------|
+>| 7B | word |
+ |----|------|
  
- Sets the condition flag if a > b
+ Sets the condition flag if a > b (unsigned)
  
  ..., valuea_h, valuea_l ->
  ...
  
  ----------------
-.CGE
+.UCGE
+ |----|
+>| 7C |
+ |----|
  
- Sets the condition flag if a >= b
+ Sets the condition flag if a >= b (unsigned)
  
  ..., valuea, valueb ->
  ...
  
  ----------------
-.CGEI byte
+.UCGE byte
+ |----|------|
+>| 7D | byte |
+ |----|------|
  
- Sets the condition flag if a >= b
+ Sets the condition flag if a >= b (unsigned)
  
  ..., valuea ->
  ...
  
  ----------------
-.CGEW
+.UCGEW
+ |----|
+>| 7E |
+ |----|
  
- Sets the condition flag if a >= b
+ Sets the condition flag if a >= b (unsigned)
  
  ..., valuea_h, valuea_l, valueb_h, valueb_l ->
  ...
  
  ----------------
-.CGEWI word
+.UCGEW word
+ |----|------|
+>| 7F | word |
+ |----|------|
  
- Sets the condition flag if a >= b
+ Sets the condition flag if a >= b (unsigned)
  
  ..., valuea_h, valuea_l ->
  ...
  
  ----------------
-.CL
+.UCL
+ |----|
+>| 80 |
+ |----|
  
- Sets the condition flag if a < b
+ Sets the condition flag if a < b (unsigned)
  
  ..., valuea, valueb ->
  ...
  
  ----------------
-.CLI byte
+.UCL byte
+ |----|------|
+>| 81 | byte |
+ |----|------|
  
- Sets the condition flag if a < b
+ Sets the condition flag if a < b (unsigned)
  
  ..., valuea ->
  ...
  
  ----------------
-.CLW
+.UCLW
+ |----|
+>| 82 |
+ |----|
  
- Sets the condition flag if a < b
+ Sets the condition flag if a < b (unsigned)
  
  ..., valuea_h, valuea_l, valueb_h, valueb_l ->
  ...
  
  ----------------
-.CLWI word
+.UCLW word
+ |----|------|
+>| 83 | word |
+ |----|------|
  
- Sets the condition flag if a < b
+ Sets the condition flag if a < b (unsigned)
  
  ..., valuea_h, valuea_l ->
  ...
  
  ----------------
-.CLE
+.UCLE
+ |----|
+>| 84 |
+ |----|
  
- Sets the condition flag if a <= b
+ Sets the condition flag if a <= b (unsigned)
  
  ..., valuea, valueb ->
  ...
  
  ----------------
-.CLEI byte
+.UCLE byte
+ |----|------|
+>| 85 | byte |
+ |----|------|
  
- Sets the condition flag if a <= b
+ Sets the condition flag if a <= b (unsigned)
  
  ..., valuea ->
  ...
  
  ----------------
-.CLEW
+.UCLEW
+ |----|
+>| 86 |
+ |----|
  
- Sets the condition flag if a <= b
+ Sets the condition flag if a <= b (unsigned)
  
  ..., valuea_h, valuea_l, valueb_h, valueb_l ->
  ...
  
  ----------------
-.CLEWI word
+.UCLEW word
+ |----|------|
+>| 87 | word |
+ |----|------|
  
- Sets the condition flag if a <= b
+ Sets the condition flag if a <= b (unsigned)
+ 
+ ..., valuea_h, valuea_l ->
+ ...
+ 
+ ----------------
+.SCE
+ |----|
+>| 88 |
+ |----|
+ 
+ Sets the condition flag if a = b (signed)
+ 
+ ..., valuea, valueb ->
+ ...
+ 
+ ----------------
+.SCE byte
+ |----|------|
+>| 89 | byte |
+ |----|------|
+ 
+ Sets the condition flag if a = b (signed)
+ 
+ ..., valuea ->
+ ...
+ 
+ ----------------
+.SCEW
+ |----|
+>| 8A |
+ |----|
+ 
+ Sets the condition flag if a = b (signed)
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+ 
+ ----------------
+.SCEW word
+ |----|------|
+>| 8B | word |
+ |----|------|
+ 
+ Sets the condition flag if a = b (signed)
+ 
+ ..., valuea_h, valuea_l ->
+ ...
+ 
+ ----------------
+.SCNE
+ |----|
+>| 8C |
+ |----|
+ 
+ Sets the condition flag if a != b (signed)
+ 
+ ..., valuea, valueb ->
+ ...
+ 
+ ----------------
+.SCNE byte
+ |----|------|
+>| 8D | byte |
+ |----|------|
+ 
+ Sets the condition flag if a != b (signed)
+ 
+ ..., valuea ->
+ ...
+ 
+ ----------------
+.SCNEW
+ |----|
+>| 8E |
+ |----|
+ 
+ Sets the condition flag if a != b (signed)
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+ 
+ ----------------
+.SCNEW word
+ |----|------|
+>| 8F | word |
+ |----|------|
+ 
+ Sets the condition flag if a != b (signed)
+ 
+ ..., valuea_h, valuea_l ->
+ ...
+ 
+ ----------------
+.SCG
+ |----|
+>| 90 |
+ |----|
+ 
+ Sets the condition flag if a > b (signed)
+ 
+ ..., valuea, valueb ->
+ ...
+ 
+ ----------------
+.SCG byte
+ |----|------|
+>| 91 | byte |
+ |----|------|
+ 
+ Sets the condition flag if a > b (signed)
+ 
+ ..., valuea ->
+ ...
+ 
+ ----------------
+.SCGW
+ |----|
+>| 92 |
+ |----|
+ 
+ Sets the condition flag if a > b (signed)
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+ 
+ ----------------
+.SCGW word
+ |----|------|
+>| 93 | word |
+ |----|------|
+ 
+ Sets the condition flag if a > b (signed)
+ 
+ ..., valuea_h, valuea_l ->
+ ...
+ 
+ ----------------
+.SCGE
+ |----|
+>| 94 |
+ |----|
+ 
+ Sets the condition flag if a >= b (signed)
+ 
+ ..., valuea, valueb ->
+ ...
+ 
+ ----------------
+.SCGE byte
+ |----|------|
+>| 95 | byte |
+ |----|------|
+ 
+ Sets the condition flag if a >= b (signed)
+ 
+ ..., valuea ->
+ ...
+ 
+ ----------------
+.SCGEW
+ |----|
+>| 96 |
+ |----|
+ 
+ Sets the condition flag if a >= b (signed)
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+ 
+ ----------------
+.SCGEW word
+ |----|------|
+>| 97 | word |
+ |----|------|
+ 
+ Sets the condition flag if a >= b (signed)
+ 
+ ..., valuea_h, valuea_l ->
+ ...
+ 
+ ----------------
+.SCL
+ |----|
+>| 98 |
+ |----|
+ 
+ Sets the condition flag if a < b (signed)
+ 
+ ..., valuea, valueb ->
+ ...
+ 
+ ----------------
+.SCL byte
+ |----|------|
+>| 99 | byte |
+ |----|------|
+ 
+ Sets the condition flag if a < b (signed)
+ 
+ ..., valuea ->
+ ...
+ 
+ ----------------
+.SCLW
+ |----|
+>| 9A |
+ |----|
+ 
+ Sets the condition flag if a < b (signed)
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+ 
+ ----------------
+.SCLW word
+ |----|------|
+>| 9B | word |
+ |----|------|
+ 
+ Sets the condition flag if a < b (signed)
+ 
+ ..., valuea_h, valuea_l ->
+ ...
+ 
+ ----------------
+.SCLE
+ |----|
+>| 9C |
+ |----|
+ 
+ Sets the condition flag if a <= b (signed)
+ 
+ ..., valuea, valueb ->
+ ...
+ 
+ ----------------
+.SCLE byte
+ |----|------|
+>| 9D | byte |
+ |----|------|
+ 
+ Sets the condition flag if a <= b (signed)
+ 
+ ..., valuea ->
+ ...
+ 
+ ----------------
+.SCLEW
+ |----|
+>| 9E |
+ |----|
+ 
+ Sets the condition flag if a <= b (signed)
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ...
+ 
+ ----------------
+.SCLEW word
+ |----|------|
+>| 9F | word |
+ |----|------|
+ 
+ Sets the condition flag if a <= b (signed)
  
  ..., valuea_h, valuea_l ->
  ...
@@ -1547,7 +2083,7 @@
  ----------------
 .JMPS
  |----|
->| 80 |
+>| A0 |
  |----|
  
  Jumps by the 1-byte displacement relative to the next instruction
@@ -1588,7 +2124,7 @@
  ----------------
 .JMPS byte OR short offset label
  |----|------|
->| 81 | byte |
+>| A1 | byte |
  |----|------|
  
  Jumps by the 1-byte displacement relative to the next instruction
@@ -1628,7 +2164,7 @@
  ----------------
 .JMPSC
  |----|
->| 82 |
+>| A2 |
  |----|
  
  Jumps by the 1-byte displacement relative to the next instruction if condition is set
@@ -1639,7 +2175,7 @@
  ----------------
 .JMPSC byte OR short offset label
  |----|------|
->| 83 | byte |
+>| A3 | byte |
  |----|------|
  
  Jumps by the 1-byte displacement relative to the next instruction if condition is set
@@ -1649,7 +2185,7 @@
  ----------------
 .JMPSN
  |----|
->| 84 |
+>| A4 |
  |----|
  
  Jumps by the 1-byte displacement relative to the next instruction if condition is not set
@@ -1660,7 +2196,7 @@
  ----------------
 .JMPSN byte OR short offset label
  |----|------|
->| 85 | byte |
+>| A5 | byte |
  |----|------|
  
  Jumps by the 1-byte displacement relative to the next instruction if condition is not set
@@ -1670,7 +2206,7 @@
  ----------------
 .JMPL
  |----|
->| 86 |
+>| A6 |
  |----|
  
  Jumps to the address
@@ -1693,7 +2229,7 @@
  ----------------
 .JMPL word OR label
  |----|------|
->| 87 | word |
+>| A7 | word |
  |----|------|
  
  Jumps to the address
@@ -1715,7 +2251,7 @@
  ----------------
 .JMPLC
  |----|
->| 88 |
+>| A8 |
  |----|
  
  Jumps to the address if condition is set
@@ -1726,7 +2262,7 @@
  ----------------
 .JMPLC word OR label
  |----|------|
->| 89 | word |
+>| A9 | word |
  |----|------|
  
  Jumps to the address if condition is set
@@ -1736,7 +2272,7 @@
  ----------------
 .JMPLN
  |----|
->| 8A |
+>| AA |
  |----|
  
  Jumps to the address if condition is not set
@@ -1747,7 +2283,7 @@
  ----------------
 .JMPLN word OR label
  |----|------|
->| 8B | word |
+>| AB | word |
  |----|------|
  
  Jumps to the address if condition is not set
@@ -1757,7 +2293,7 @@
  ----------------
 .CALL
  |----|
->| 8C |
+>| AC |
  |----|
  
  Pushes IP then jumps to the address
@@ -1768,7 +2304,7 @@
  ----------------
 .CALL word OR label
  |----|------|
->| 8D | word |
+>| AD | word |
  |----|------|
  
  Pushes IP then jumps to the address
@@ -1779,7 +2315,7 @@
  ----------------
 .RET
  |----|
->| 8E |
+>| AE |
  |----|
  
  Pops IP
@@ -1790,7 +2326,7 @@
  ----------------
 .RET unsigned byte
  |----|
->| 8F |
+>| AF |
  |----|
  
  Pops IP then pops n bytes
@@ -1801,7 +2337,7 @@
  ----------------
 .ENTER byte
  |----|------|
->| 90 | byte |
+>| B0 | byte |
  |----|------|
  
  Pushes BP, sets BP to SP, adds the value to SP
@@ -1812,7 +2348,7 @@
  ----------------
 .ENTER word
  |----|------|
->| 91 | word |
+>| B1 | word |
  |----|------|
  
  Pushes BP, sets BP to SP, adds the value to SP
@@ -1823,13 +2359,409 @@
  ----------------
 .LEAVE
  |----|
->| 92 |
+>| B2 |
  |----|
  
  Sets SP to BP, pops BP
  
  ..., bp_h, bp_l, ... ->
  ...
+ 
+ ----------------
+.ADD
+ |----|
+>| C0 |
+ |----|
+ 
+ Add bytes
+ 
+ ..., valuea, valueb ->
+ ..., a+b
+ 
+ ----------------
+.ADDC
+ |----|
+>| C1 |
+ |----|
+ 
+ Add bytes with carry
+ 
+ ..., valuea, valueb ->
+ ..., a+b+c
+ 
+ ----------------
+.ADD byte
+ |----|------|
+>| C2 | byte |
+ |----|------|
+ 
+ Add immediate byte
+ 
+ ..., value ->
+ ..., value+imm
+ 
+ ----------------
+.ADDC byte
+ |----|------|
+>| C3 | byte |
+ |----|------|
+ 
+ Add immediate byte with carry
+ 
+ ..., value ->
+ ..., value+imm+c
+ 
+ ----------------
+.ADDW
+ |----|
+>| C4 |
+ |----|
+ 
+ Add words
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ..., a+b_h, a+b_l
+ 
+ ----------------
+.ADDWC
+ |----|
+>| C5 |
+ |----|
+ 
+ Add words with carry
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ..., a+b+c_h, a+b+c_l
+ 
+ ----------------
+.ADDW word
+ |----|------|
+>| C6 | word |
+ |----|------|
+ 
+ Add immediate word
+ 
+ ..., value_h, value_l ->
+ ..., value+imm_h, value+imm_l
+ 
+ ----------------
+.ADDWC word
+ |----|------|
+>| C7 | word |
+ |----|------|
+ 
+ Add immediate word with carry
+ 
+ ..., value_h, value_l ->
+ ..., value+imm+c_h, value+imm+c_l
+ 
+ ----------------
+.SUB
+ |----|
+>| C8 |
+ |----|
+ 
+ Subtract bytes
+ 
+ ..., valuea, valueb ->
+ ..., a-b
+ 
+ ----------------
+.SUBB
+ |----|
+>| C9 |
+ |----|
+ 
+ Subtract bytes with borrow
+ 
+ ..., valuea, valueb ->
+ ..., a-b-c
+ 
+ ----------------
+.SUB byte
+ |----|------|
+>| CA | byte |
+ |----|------|
+ 
+ Subtract immediate byte
+ 
+ ..., value ->
+ ..., value-imm
+ 
+ ----------------
+.SUBB byte
+ |----|------|
+>| CB | byte |
+ |----|------|
+ 
+ Subtract immediate byte with borrow
+ 
+ ..., value ->
+ ..., value-imm-c
+ 
+ ----------------
+.SUBW
+ |----|
+>| CC |
+ |----|
+ 
+ Subtract words
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ..., a-b_h, a-b_l
+ 
+ ----------------
+.SUBWB
+ |----|
+>| CD |
+ |----|
+ 
+ Subtract words with borrow
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ..., a-b-c_h, a-b-c_l
+ 
+ ----------------
+.SUBW word
+ |----|------|
+>| CE | word |
+ |----|------|
+ 
+ Subtract immediate word
+ 
+ ..., value_h, value_l ->
+ ..., value-imm_h, value-imm_l
+ 
+ ----------------
+.SUBWB word
+ |----|------|
+>| CF | word |
+ |----|------|
+ 
+ Subtract immediate word with borrow
+ 
+ ..., value_h, value_l ->
+ ..., value-imm-c_h, value-imm-c_l
+ 
+ ----------------
+.AND
+ |----|
+>| D0 |
+ |----|
+ 
+ Bitwise logical AND, bytes
+ 
+ ..., valuea, valueb ->
+ ..., a&b
+ 
+ ----------------
+.AND byte
+ |----|------|
+>| D1 | byte |
+ |----|------|
+ 
+ Immediate bitwise logical AND, bytes
+ 
+ ..., value ->
+ ..., value&imm
+ 
+ ----------------
+.ANDW
+ |----|
+>| D2 |
+ |----|
+ 
+ Bitwise logical AND, words
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ..., a&b_h, a&b_l
+ 
+ ----------------
+.ANDW word
+ |----|------|
+>| D3 | word |
+ |----|------|
+ 
+ Immediate bitwise logical AND, words
+ 
+ ..., value_h, value_l ->
+ ..., value&imm_h, value&imm_l
+ 
+ ----------------
+.OR
+ |----|
+>| D4 |
+ |----|
+ 
+ Bitwise logical OR, bytes
+ 
+ ..., valuea, valueb ->
+ ..., a|b
+ 
+ ----------------
+.OR byte
+ |----|------|
+>| D5 | byte |
+ |----|------|
+ 
+ Immediate bitwise logical OR, bytes
+ 
+ ..., value ->
+ ..., value|imm
+ 
+ ----------------
+.ORW
+ |----|
+>| D6 |
+ |----|
+ 
+ Bitwise logical OR, words
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ..., a|b_h, a|b_l
+ 
+ ----------------
+.ORW word
+ |----|------|
+>| D7 | word |
+ |----|------|
+ 
+ Immediate bitwise logical OR, words
+ 
+ ..., value_h, value_l ->
+ ..., value|imm_h, value|imm_l
+ 
+ ----------------
+.XOR
+ |----|
+>| D8 |
+ |----|
+ 
+ Bitwise logical XOR, bytes
+ 
+ ..., valuea, valueb ->
+ ..., a^b
+ 
+ ----------------
+.XOR byte
+ |----|------|
+>| D9 | byte |
+ |----|------|
+ 
+ Immediate bitwise logical XOR, bytes
+ 
+ ..., value ->
+ ..., value^imm
+ 
+ ----------------
+.XORW
+ |----|
+>| DA |
+ |----|
+ 
+ Bitwise logical XOR, words
+ 
+ ..., valuea_h, valuea_l, valueb_h, valueb_l ->
+ ..., a^b_h, a^b_l
+ 
+ ----------------
+.XORW word
+ |----|------|
+>| DB | word |
+ |----|------|
+ 
+ Immediate bitwise logical XOR, words
+ 
+ ..., value_h, value_l ->
+ ..., value^imm_h, value^imm_l
+ 
+ ----------------
+.NOT
+ |----|
+>| DC |
+ |----|
+ 
+ Bitwise logical NOT, byte
+ 
+ ..., value ->
+ ..., !value
+ 
+ ----------------
+.NOTW
+ |----|
+>| DD |
+ |----|
+ 
+ Bitwise logical NOT, word
+ 
+ ..., value_h, value_l ->
+ ..., !value_h, !value_l
+ 
+ ----------------
+.SHL
+ |----|
+>| DE |
+ |----|
+ 
+ Shift left, byte
+ 
+ ..., value ->
+ ..., value<<1
+ 
+ ----------------
+.SHLW
+ |----|
+>| DF |
+ |----|
+ 
+ Shift left, word
+ 
+ ..., value_h, value_l ->
+ ..., value<<1_h, value<<1_l
+ 
+ ----------------
+.SRA
+ |----|
+>| E0 |
+ |----|
+ 
+ Arithmetic shift right, byte
+ 
+ ..., value ->
+ ..., value>>1
+ 
+ ----------------
+.SRAW
+ |----|
+>| E1 |
+ |----|
+ 
+ Arithmetic shift right, word
+ 
+ ..., value_h, value_l ->
+ ..., value>>1_h, value>>1_l
+ 
+ ----------------
+.SRL
+ |----|
+>| E2 |
+ |----|
+ 
+ Logical shift right, byte
+ 
+ ..., value ->
+ ..., value>>>1
+ 
+ ----------------
+.SRLW
+ |----|
+>| E3 |
+ |----|
+ 
+ Logical shift right, word
+ 
+ ..., value_h, value_l ->
+ ..., value>>>1_h, value>>>1_l
  
  ----------------
 .READ

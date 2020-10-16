@@ -233,12 +233,12 @@
       <elementName>Tunnel</elementName>
       <elementAttributes>
         <entry>
-          <string>NetName</string>
-          <string>KBT Enable</string>
-        </entry>
-        <entry>
           <string>rotation</string>
           <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>KBT Enable</string>
         </entry>
       </elementAttributes>
       <pos x="420" y="280"/>
@@ -341,7 +341,7 @@
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="-100" y="620"/>
+      <pos x="-180" y="600"/>
     </visualElement>
     <visualElement>
       <elementName>T_FF</elementName>
@@ -363,11 +363,30 @@
       </elementAttributes>
       <pos x="280" y="620"/>
     </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes/>
+      <pos x="-160" y="600"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Ground</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="1"/>
+        </entry>
+      </elementAttributes>
+      <pos x="-180" y="640"/>
+    </visualElement>
   </visualElements>
   <wires>
     <wire>
       <p1 x="80" y="320"/>
       <p2 x="100" y="320"/>
+    </wire>
+    <wire>
+      <p1 x="-180" y="640"/>
+      <p2 x="-160" y="640"/>
     </wire>
     <wire>
       <p1 x="80" y="580"/>
@@ -406,12 +425,12 @@
       <p2 x="100" y="460"/>
     </wire>
     <wire>
-      <p1 x="-100" y="620"/>
-      <p2 x="-80" y="620"/>
-    </wire>
-    <wire>
       <p1 x="260" y="620"/>
       <p2 x="280" y="620"/>
+    </wire>
+    <wire>
+      <p1 x="-100" y="620"/>
+      <p2 x="-80" y="620"/>
     </wire>
     <wire>
       <p1 x="-80" y="620"/>
@@ -472,6 +491,10 @@
     <wire>
       <p1 x="440" y="180"/>
       <p2 x="480" y="180"/>
+    </wire>
+    <wire>
+      <p1 x="-180" y="600"/>
+      <p2 x="-160" y="600"/>
     </wire>
     <wire>
       <p1 x="0" y="600"/>
