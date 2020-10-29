@@ -640,7 +640,7 @@
  load sp to A, decrement sp
 ~0000 0000 0000 0000 0010 0000 0100 0010
  
- load ip to B, save inverse carry of 2A
+ load immediate to B, save inverse carry of 2A
 ~0000 0111 1011 0001 0000 0000 1000 0011
  
  store sign extension to sp, increment sp
@@ -652,7 +652,7 @@
  load sp to B, increment sp
 ~0000 0000 0000 0000 0011 0000 1000 0010
  
- load ip to A
+ load immediate to A
 ~0000 0000 0000 0001 0000 0000 0100 0011
  
  addwc, store to A
@@ -2762,6 +2762,50 @@
  
  ..., value_h, value_l ->
  ..., value>>>1_h, value>>>1_l
+ 
+ ----------------
+.POPU1
+ |----|
+>| F0 |
+ |----|
+ 
+ Pops the byte 1 byte below
+ 
+ ..., value, byte ->
+ ..., byte
+ 
+ ----------------
+.POPU2
+ |----|
+>| F1 |
+ |----|
+ 
+ Pops the byte 2 bytes below
+ 
+ ..., value, <2 bytes> ->
+ ..., <2 bytes>
+ 
+ ----------------
+.POPWU1
+ |----|
+>| F2 |
+ |----|
+ 
+ Pops the word 1 byte below
+ 
+ ..., value_h, value_l, byte ->
+ ..., byte
+ 
+ ----------------
+.POPWU2
+ |----|
+>| F3 |
+ |----|
+ 
+ Pops the word 2 bytes below
+ 
+ ..., value_h, value_l, <2 bytes> ->
+ ..., <2 bytes>
  
  ----------------
 .READ
