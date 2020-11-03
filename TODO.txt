@@ -1,1 +1,0 @@
-Switch to custom ALU to support things like shifts, simplify logic
