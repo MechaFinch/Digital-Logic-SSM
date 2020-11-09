@@ -585,11 +585,11 @@
  load sp to A, increment sp
 ~0000 0000 0000 0000 0011 0000 0100 0010
  
- load sp to B, save inverse carry of 2A
-~0000 0111 1011 0000 0000 0000 1000 0010
+ load sp to B
+~0000 0000 0000 0000 0000 0000 1000 0010
  
- store sign extension to sp, decrement sp
-~0000 0000 0000 1100 0010 0000 0010 0110
+ store sign xtn. of A to sp, decrement sp
+~0000 0000 0010 1000 0010 0000 0010 0110
 
  addsc, store to sp, increment sp
 ~0000 0110 1010 0100 0011 0000 0010 0110
@@ -640,11 +640,11 @@
  load sp to A, decrement sp
 ~0000 0000 0000 0000 0010 0000 0100 0010
  
- load immediate to B, save inverse carry of 2A
+ load immediate to B
 ~0000 0111 1011 0001 0000 0000 1000 0011
  
- store sign extension to sp, increment sp
-~0000 0000 0000 1100 0011 0000 0010 0110
+ store sign xtn. of A to sp, increment sp
+~0000 0000 0010 1000 0011 0000 0010 0110
  
  addsc, store to sp, decrement sp
 ~0000 0110 1010 0100 0010 0000 0010 0110
@@ -2762,6 +2762,50 @@
  
  ..., value_h, value_l ->
  ..., value>>>1_h, value>>>1_l
+ 
+ ----------------
+.ROL
+ |----|
+>| E4 |
+ |----|
+ 
+ Rotate left, byte
+ 
+ ..., value ->
+ ..., (value<<1)|Cin
+ 
+ ----------------
+.ROLW
+ |----|
+>| E5 |
+ |----|
+ 
+ Rotate left, word
+ 
+ ..., value_h, value_l ->
+ ..., (value<<1)|Cin_h, (value<<1)|Cin_l
+ 
+ ----------------
+.ROR
+ |----|
+>| E6 |
+ |----|
+ 
+ Rotate right, byte
+ 
+ ..., value ->
+ ..., Cin|(value>>1)
+ 
+ ----------------
+.RORW
+ |----|
+>| E7 |
+ |----|
+ 
+ Rotate right, word
+ 
+ ..., value_h, value_l ->
+ ..., Cin|(value>>1)_h, Cin|(value>>1)_l
  
  ----------------
 .POPU1

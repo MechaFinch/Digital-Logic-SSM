@@ -7,11 +7,11 @@ would come from adding new components.
 
  Address	Selectors
  |---|------|	|-----|-----|-----|-----|-----|-----|
- | M | SSSS |	| 181 | +/- | SHL | SHR | ATM | A/B |
+ | M | SSSS |	| A/B | ATM | SHR | SHL | +/- | 181 |
  |---|------|	|-----|-----|-----|-----|-----|-----|
  
  181: Use 74181 chip
- +/-: Sign
+ +/-: Sign Extesion
  SHL: Shift Left
  SHR: Shigt Right
  ATM: Arithmetic
@@ -19,6 +19,7 @@ would come from adding new components.
  
  Anything not defined has value 100000 (select 74181)
  
+ REDO
  Hex	MSSSS Val	Function	Original (74181)
  01 04	00001 000100	A >> 1		A OR B (arith)
  02 05	00010 000101	B >> 1		A OR !B (arith)
@@ -26,5 +27,5 @@ would come from adding new components.
  05 07	00101 000111	B >>> 1		(A OR B) PLUS (A AND !B)
  07 08	00111 001000	A << 1		(A AND !B) MINUS 1
  08 09	01000 001001	B << 1		A PLUS (A AND B)
- 0A 10	01010 010000	SIGN(A)		(A OR !B) PLUS (A AND B)
- 0B 11	01011 010001	SIGN(B)		(A AND B) MINUS 1
+ 0A 10	01010 010000	SIGNEXTEND(A)	(A OR !B) PLUS (A AND B)
+ 0B 11	01011 010001	SIGNEXTEND(B)	(A AND B) MINUS 1
