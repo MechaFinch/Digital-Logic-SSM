@@ -344,8 +344,11 @@
         </entry>
         <entry>
           <string>Data</string>
-          <data>20,4,5,20,6,7,20,8,9,20,10,11,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
-20,20,20</data>
+          <data>1,8,28,1,18,38,1,4,24,1,2,22,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1</data>
+        </entry>
+        <entry>
+          <string>lastDataFile</string>
+          <string>C:\Users\Alex\Desktop\Digital\gamer\hex\alu rom.hex</string>
         </entry>
       </elementAttributes>
       <pos x="1240" y="980"/>

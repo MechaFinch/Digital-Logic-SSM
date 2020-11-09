@@ -15,17 +15,16 @@ would come from adding new components.
  SHL: Shift Left
  SHR: Shigt Right
  ATM: Arithmetic
- A/B: Use A or B
+ A/B: Use A (0) or B (1)
  
- Anything not defined has value 100000 (select 74181)
+ Anything not defined has value 1 (select 74181)
  
- REDO
  Hex	MSSSS Val	Function	Original (74181)
- 01 04	00001 000100	A >> 1		A OR B (arith)
- 02 05	00010 000101	B >> 1		A OR !B (arith)
- 04 06	00100 000110	A >>> 1		A PLUS (A AND !B)
- 05 07	00101 000111	B >>> 1		(A OR B) PLUS (A AND !B)
- 07 08	00111 001000	A << 1		(A AND !B) MINUS 1
- 08 09	01000 001001	B << 1		A PLUS (A AND B)
- 0A 10	01010 010000	SIGNEXTEND(A)	(A OR !B) PLUS (A AND B)
- 0B 11	01011 010001	SIGNEXTEND(B)	(A AND B) MINUS 1
+ 01 08	00001 001000	A >> 1		A OR B (arith)
+ 02 28	00010 101000	B >> 1		A OR !B (arith)
+ 04 18	00100 011000	A >>> 1		A PLUS (A AND !B)
+ 05 38	00101 111000	B >>> 1		(A OR B) PLUS (A AND !B)
+ 07 04	00111 000100	A << 1		(A AND !B) MINUS 1
+ 08 24	01000 100100	B << 1		A PLUS (A AND B)
+ 0A 02	01010 000010	SIGNEXTEND(A)	(A OR !B) PLUS (A AND B)
+ 0B 22	01011 100010	SIGNEXTEND(B)	(A AND B) MINUS 1

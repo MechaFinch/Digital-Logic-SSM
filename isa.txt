@@ -588,9 +588,9 @@
  load sp to B
 ~0000 0000 0000 0000 0000 0000 1000 0010
  
- store sign xtn. of A to sp, decrement sp
-~0000 0000 0010 1000 0010 0000 0010 0110
-
+ store sign xtn. A to sp, decrement sp
+~0000 0000 0010 1000 0010 0000 0010 0100
+ 
  addsc, store to sp, increment sp
 ~0000 0110 1010 0100 0011 0000 0010 0110
  
@@ -601,7 +601,7 @@
 ~0000 0000 0000 0000 0010 0000 0100 0010
  
  addwc, store to A, decrement sp
-~0000 0000 0010 0100 0010 0000 0100 0100
+~0000 0000 0010 0100 0010 0000 0110 0100
  
  load sp to B, increment sp
 ~0000 0000 0000 0000 0011 0000 1000 0010
@@ -2094,11 +2094,11 @@
  load sp to A
 ~0000 0000 0000 0000 0000 0000 0100 0010
  
- put ipl in B, save inverse carry of 2A
-~0000 0111 1011 0000 0000 0000 1001 0011
+ put ipl in B
+~0000 0000 0000 0000 0000 0000 1001 0011
  
- store sign extension to sp, decrement sp
-~0000 0000 0000 1100 0010 0000 0010 0110
+ store sign xtn. A to sp, decrement sp
+~0000 0000 0010 1000 0010 0000 0010 0110
  
  addsc, store to sp, increment sp
 ~0000 0110 1010 0100 0011 0000 0010 0110
@@ -2134,11 +2134,11 @@
  load immediate to A
 ~0000 0000 0000 0001 0000 0000 0100 0011
  
- put ipl in B, save inverse carry of 2A, decrement sp
-~0000 0111 1011 0000 0010 0000 1001 0011
+ put ipl in B, decrement sp
+~0000 0000 0000 0000 0010 0000 1001 0011
  
- store sign extension to sp, decrement sp
-~0000 0000 0000 1100 0010 0000 0010 0110
+ store sign xtn. A to sp, decrement sp
+~0000 0000 0010 1000 0010 0000 0010 0110
  
  addsc, store to sp, increment sp
 ~0000 0110 1010 0100 0011 0000 0010 0110
