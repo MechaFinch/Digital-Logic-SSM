@@ -8,7 +8,7 @@ in a compact form. Since the main ISA includes all possible information
 
 This file is generated from the ISA.
 
-Total Opcodes: 222
+Total Opcodes: 230
 
 
 00 NOP
@@ -859,6 +859,38 @@ E2 SRL
 E3 SRLW
  ..., value_h, value_l ->
  ..., value>>>1_h, value>>>1_l
+
+E4 ROL
+ ..., value ->
+ ..., (value<<1)|Cin
+
+E5 ROLW
+ ..., value_h, value_l ->
+ ..., (value<<1)|Cin_h, (value<<1)|Cin_l
+
+E6 ROR
+ ..., value ->
+ ..., Cin|(value>>1)
+
+E7 RORW
+ ..., value_h, value_l ->
+ ..., Cin|(value>>1)_h, Cin|(value>>1)_l
+
+F0 POPU1
+ ..., value, byte ->
+ ..., byte
+
+F1 POPU2
+ ..., value, <2 bytes> ->
+ ..., <2 bytes>
+
+F2 POPWU1
+ ..., value_h, value_l, byte ->
+ ..., byte
+
+F3 POPWU2
+ ..., value_h, value_l, <2 bytes> ->
+ ..., <2 bytes>
 
 F9 READ
  ... ->

@@ -6,9 +6,9 @@ would come from adding new components.
 
 
  Address	Selectors
- |---|------|	|-----|-----|-----|-----|-----|-----|
- | M | SSSS |	| A/B | ATM | SHR | SHL | +/- | 181 |
- |---|------|	|-----|-----|-----|-----|-----|-----|
+ |---|------|	|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+ | M | SSSS |	| A/B | AND | COR | CND | ATM | SHR | SHL | +/- | 181 |
+ |---|------|	|-----|-----|-----|-----|-----|-----|-----|-----|-----|
  
  181: Use 74181 chip
  +/-: Sign Extesion
@@ -16,15 +16,24 @@ would come from adding new components.
  SHR: Shigt Right
  ATM: Arithmetic
  A/B: Use A (0) or B (1)
+ AND: Condition AND
+ COR: Condition OR
+ CND: Condition
  
  Anything not defined has value 1 (select 74181)
  
  Hex	MSSSS Val	Function	Original (74181)
- 01 08	00001 001000	A >> 1		A OR B (arith)
- 02 28	00010 101000	B >> 1		A OR !B (arith)
- 04 18	00100 011000	A >>> 1		A PLUS (A AND !B)
- 05 38	00101 111000	B >>> 1		(A OR B) PLUS (A AND !B)
- 07 04	00111 000100	A << 1		(A AND !B) MINUS 1
- 08 24	01000 100100	B << 1		A PLUS (A AND B)
- 0A 02	01010 000010	SIGNEXTEND(A)	(A OR !B) PLUS (A AND B)
- 0B 22	01011 100010	SIGNEXTEND(B)	(A AND B) MINUS 1
+ 01 008	00001 000001000	A >> 1		A OR B (arith)
+ 02 108	00010 100001000	B >> 1		A OR !B (arith)
+ 04 018	00100 000011000	A >>> 1		A PLUS (A AND !B)
+ 05 118	00101 100011000	B >>> 1		(A OR B) PLUS (A AND !B)
+ 07 004	00111 000000100	A << 1		(A AND !B) MINUS 1
+ 08 104	01000 100000100	B << 1		A PLUS (A AND B)
+ 0A 002	01010 000000010	SIGNEXTEND(A)	(A OR !B) PLUS (A AND B)
+ 0B 102	01011 100000010	SIGNEXTEND(B)	(A AND B) MINUS 1
+ 0C 020	01100 000100000 CF		A PLUS (A << 1)
+ 0D 060	01101 001100000 CF | A		(A OR B) PLUS A
+ 0E 160	01110 101100000 CF | B		(A OR !B) PLUS A
+ 11 0A0	10001 010100000 CF & A		A NOR B
+ 12 1A0	10010 110100000 CF & B		!A AND B
+ 

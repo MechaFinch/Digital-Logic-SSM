@@ -1563,6 +1563,15 @@
  ..., valuea, valueb ->
  ...
  
+ load sp to B, increment sp
+~0000 0000 0000 0000 0011 0000 1000 0010
+ 
+ load sp to A, increment sp
+~0000 0000 0000 0000 0011 0000 0100 0010
+ 
+ set CF to A=B, next inst
+~0010 1010 1001 1011 0000 0000 0000 0011
+ 
  ----------------
 .UCE byte
  |----|------|
@@ -2259,6 +2268,21 @@
  ..., addr_h, addr_l ->
  ...
  
+ next inst if condition not set
+~0101 0000 0000 0010 0000 0000 0000 0011
+ 
+ load sp to B, increment sp
+~0000 0000 0000 0000 0011 0000 1000 0010
+ 
+ load sp to A, increment sp
+~0000 0000 0000 0000 0011 0000 0100 0010
+ 
+ put AB in ip
+~0000 0000 0000 0001 1000 0000 0000 0000
+ 
+ next inst
+~0000 0000 0000 0011 0000 0000 0000 0011
+ 
  ----------------
 .JMPLC word OR label
  |----|------|
@@ -2268,6 +2292,21 @@
  Jumps to the address if condition is set
  
  No change
+ 
+ next inst if condition not set
+~0101 0000 0000 0010 0000 0000 0000 0011
+ 
+ load immediate to B
+~0000 0000 0000 0001 0000 0000 1000 0011
+ 
+ load immediate to A
+~0000 0000 0000 0001 0000 0000 0100 0011
+ 
+ put AB in ip
+~0000 0000 0000 0001 1000 0000 0000 0000
+ 
+ next inst
+~0000 0000 0000 0011 0000 0000 0000 0011
  
  ----------------
 .JMPLN
