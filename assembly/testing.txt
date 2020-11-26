@@ -1,0 +1,32 @@
+
+
+org 0x0000
+main:
+	push 0x0100		0000: 02 00 01
+	call print_digit	0003: AD 3D 00
+	call print_digit	0006: AD 3D 00
+	push 0x0302		0009: 02 02 03
+	call print_digit	000C: AD 3D 00
+	call print_digit	000F: AD 3D 00
+	push 0x0504		0012: 02 04 05
+	call print_digit	0015: AD 3D 00
+	call print_digit	0018: AD 3D 00
+	push 0x0706		001B: 02 06 07
+	call print_digit	001E: AD 3D 00
+	call print_digit	0021: AD 3D 00
+	push 0x0908		0024: 02 08 09
+	call print_digit	0027: AD 3D 00
+	call print_digit	002A: AD 3D 00
+	write 0x0A		002D: FD 0A
+	push 0x0001		002F: 02 01 00
+	call print_digit	0032: AD 3D 00
+	call print_digit	0035: AD 3D 00
+	write 0x0A		0038: FD 0A
+	jmp main		003A: A7 00 00
+
+print_digit:
+	enter			003D: B0 00
+	load [bp+2]		003F: 2F 02
+	add 0x30		0041: C2 30
+	write			0043: FB
+	ret			0044: AE
